@@ -24,19 +24,19 @@ spec:
                 secretKeyRef:
                   key: DATABASE_URI
                   name: {{ .Chart.Name }}-secret
-{{/*          livenessProbe:*/}}
-{{/*            httpGet:*/}}
-{{/*              port: {{ .Values.application.deployment.pod.port }}*/}}
-{{/*              path: /health*/}}
-{{/*            initialDelaySeconds: 5*/}}
-{{/*            periodSeconds: 2*/}}
-{{/*            timeoutSeconds: 1*/}}
-{{/*          readinessProbe:*/}}
-{{/*            httpGet:*/}}
-{{/*              port: {{ .Values.application.deployment.pod.port }}*/}}
-{{/*              path: /health*/}}
-{{/*            initialDelaySeconds: 2*/}}
-{{/*            periodSeconds: 2*/}}
+          livenessProbe:
+            httpGet:
+              port: {{ .Values.application.deployment.pod.port }}
+              path: /health
+            initialDelaySeconds: 5
+            periodSeconds: 2
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              port: {{ .Values.application.deployment.pod.port }}
+              path: /health
+            initialDelaySeconds: 2
+            periodSeconds: 2
 ---
 apiVersion: v1
 kind: Service
