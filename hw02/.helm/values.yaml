@@ -11,6 +11,14 @@ application:
     type: LoadBalancer
     port: 8000
 
+postgresql:
+  enabled: true
+  postgresqlUsername: myuser
+  postgresqlPassword: passwd
+  postgresqlDatabase: myapp
+  service:
+    port: "5432"
+
 external:
   postgres:
     replicaCount: 1
