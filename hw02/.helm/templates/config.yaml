@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Chart.Name }}-secret
+type: Opaque
+data:
+  databaseUrl: {{ printf "postgresql://%s:%s@%s:%s/%s?charset=utf8"
+      .Values.external.postgres.access.user
+      .Values.external.postgres.access.pass
+      .Values.external.postgres.access.host
+      .Values.external.postgres.access.port
+      .Values.external.postgres.access.db | b64enc | quote }}

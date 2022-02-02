@@ -1,0 +1,28 @@
+replicaCount: 1
+
+application:
+  deployment:
+    pod:
+      repository: khaydarov95/otus-task2
+      pullPolicy: Never
+      tag: v2
+      port: 80
+  service:
+    type: LoadBalancer
+    port: 8000
+
+external:
+  postgres:
+    replicaCount: 1
+    image:
+      repository: postgres
+      tag: latest
+    access:
+      host: otus-task2-postgres
+      port: "5432"
+      user: myuser
+      pass: passwd
+      db: myapp
+
+
+

@@ -1,0 +1,15 @@
+apiVersion: skaffold/v2beta26
+kind: Config
+metadata:
+  name: task-
+build:
+  artifacts:
+  - image: khaydarov95/otus-task1
+    docker:
+      dockerfile: ./simple-symfony-application/Dockerfile
+deploy:
+  kubectl:
+    manifests:
+    - deployment.yaml
+    - ingress.yaml
+    - service.yaml

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otus-task1-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: otus-task1-app
+  template:
+    metadata:
+      labels:
+        app: otus-task1-app
+    spec:
+      containers:
+        - name: otus-task1
+          image: khaydarov95/otus-task1:v1
+          ports:
+            - name: web
+              containerPort: 80
+          livenessProbe:
+            httpGet:
+              port: 80
+              path: /
+            initialDelaySeconds: 5
+            periodSeconds: 2
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              port: 80
+              path: /health
+            initialDelaySeconds: 2
+            periodSeconds: 2
