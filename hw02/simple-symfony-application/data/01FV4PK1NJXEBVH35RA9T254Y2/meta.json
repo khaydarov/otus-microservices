@@ -1,0 +1,17 @@
+{
+	"ulid": "01FV4PK1NJXEBVH35RA9T254Y2",
+	"minTime": 1643803207130,
+	"maxTime": 1643810400000,
+	"stats": {
+		"numSamples": 1134,
+		"numSeries": 7,
+		"numChunks": 14
+	},
+	"compaction": {
+		"level": 1,
+		"sources": [
+			"01FV4PK1NJXEBVH35RA9T254Y2"
+		]
+	},
+	"version": 1
+}

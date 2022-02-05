@@ -1,0 +1,17 @@
+{
+	"ulid": "01FV4PK199VR91PFWVTDA8SQSC",
+	"minTime": 1643796000000,
+	"maxTime": 1643803200000,
+	"stats": {
+		"numSamples": 3115,
+		"numSeries": 7,
+		"numChunks": 28
+	},
+	"compaction": {
+		"level": 1,
+		"sources": [
+			"01FV4PK199VR91PFWVTDA8SQSC"
+		]
+	},
+	"version": 1
+}
