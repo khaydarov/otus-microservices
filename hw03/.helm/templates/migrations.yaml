@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Chart.Name }}-migration
+spec:
+  template:
+    metadata:
+      name: {{ .Chart.Name }}-migration
+    spec:
+      restartPolicy: Never
+      initContainers:
+        - name: check-db-readiness
+          image: {{ .Values.external.postgres.image.repository }}:{{ .Values.external.postgres.image.tag }}
+          env:
+            - name: POSTGRES_HOST
+              value: {{ .Values.external.postgres.access.host }}
+            - name: POSTGRES_PORT
+              value: {{ .Values.external.postgres.access.port | quote }}
+          command:
+            - sh
+            - "-c"
+            - |
+              until pg_isready -h $POSTGRES_HOST  -p  $POSTGRES_PORT;
+              do echo waiting for database; sleep 2; done;
+      containers:
+        - name: {{ .Chart.Name }}-post-install-migration-job
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: databaseUrl
+                  name: {{ .Chart.Name }}-secret
+          image: {{ .Values.application.deployment.pod.repository}}:{{ .Values.application.deployment.pod.tag }}
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - |
+            php bin/console doctrine:migrations:migrate
+  backoffLimit: 2

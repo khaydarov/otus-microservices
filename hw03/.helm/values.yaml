@@ -3,21 +3,13 @@ replicaCount: 1
 application:
   deployment:
     pod:
-      repository: khaydarov95/otus-hw02
+      repository: khaydarov95/otus-hw03
       pullPolicy: Never
       tag: v2
       port: 80
   service:
     type: LoadBalancer
     port: 8000
-
-postgresql:
-  enabled: true
-  postgresqlUsername: myuser
-  postgresqlPassword: passwd
-  postgresqlDatabase: myapp
-  service:
-    port: "5432"
 
 external:
   postgres:
@@ -26,7 +18,7 @@ external:
       repository: postgres
       tag: latest
     access:
-      host: otus-hw02-postgres
+      host: otus-hw03-postgres
       port: "5432"
       user: myuser
       pass: passwd
