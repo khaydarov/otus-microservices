@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: otus-task1-service
+  name: otus-hw01-service
 spec:
   selector:
-    app: otus-task1-app
+    app: otus-hw01-app
   ports:
     - protocol: TCP
       port: 8000

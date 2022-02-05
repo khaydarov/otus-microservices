@@ -3,7 +3,7 @@ replicaCount: 1
 application:
   deployment:
     pod:
-      repository: khaydarov95/otus-task2
+      repository: khaydarov95/otus-hw02
       pullPolicy: Never
       tag: v2
       port: 80
@@ -18,7 +18,7 @@ external:
       repository: postgres
       tag: latest
     access:
-      host: otus-task2-postgres
+      host: otus-hw02-postgres
       port: "5432"
       user: myuser
       pass: passwd

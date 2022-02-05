@@ -4,7 +4,7 @@ metadata:
   name: task-
 build:
   artifacts:
-  - image: khaydarov95/otus-task1
+  - image: khaydarov95/otus-hw01
     docker:
       dockerfile: ./simple-symfony-application/Dockerfile
 deploy:
