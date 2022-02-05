@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Chart.Name }}-postgres-statefulset
+spec:
+  serviceName: postgres
+  replicas: {{ .Values.external.postgres.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-postgres
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-postgres
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-postgres
+          image: {{ .Values.external.postgres.image.repository }}:{{ .Values.external.postgres.image.tag }}
+          ports:
+            - containerPort: {{ .Values.external.postgres.access.port }}
+              name: postgredb
+          env:
+            - name: POSTGRES_DB
+              value: {{ .Values.external.postgres.access.db }}
+            - name: POSTGRES_USER
+              value: {{ .Values.external.postgres.access.user }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.external.postgres.access.pass }}
+          volumeMounts:
+            - name: postgredb
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
+  volumeClaimTemplates:
+    - metadata:
+        name: postgredb
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: standard
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-postgres
+  labels:
+    app: {{ .Chart.Name }}-postgres
+spec:
+  type: LoadBalancer
+  ports:
+    - port: {{ .Values.external.postgres.access.port }}
+  selector:
+    app: {{ .Chart.Name }}-postgres
