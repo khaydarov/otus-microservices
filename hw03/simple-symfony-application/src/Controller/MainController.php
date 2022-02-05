@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\MetricsAdapter;
 use Prometheus\CollectorRegistry;
 use Prometheus\RenderTextFormat;
+use Prometheus\Storage\Redis;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,13 +16,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class MainController extends AbstractController
 {
     /**
-     * @var CollectorRegistry
+     * @var MetricsAdapter
      */
-    private CollectorRegistry $prometheusRegistry;
+    private $metricsAdapter;
 
-    public function __construct()
+    public function __construct(MetricsAdapter $metricsAdapter)
     {
-        $this->prometheusRegistry = CollectorRegistry::getDefault();
+        $this->metricsAdapter = $metricsAdapter;
     }
 
     /**
@@ -49,7 +51,7 @@ class MainController extends AbstractController
     public function metrics(): Response
     {
         $renderer = new RenderTextFormat();
-        $result = $renderer->render($this->prometheusRegistry->getMetricFamilySamples());
+        $result = $renderer->render($this->metricsAdapter->getPrometheusRegistry()->getMetricFamilySamples());
 
         return new Response($result);
     }

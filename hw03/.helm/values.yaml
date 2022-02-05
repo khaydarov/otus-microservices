@@ -5,11 +5,15 @@ application:
     pod:
       repository: khaydarov95/otus-hw03
       pullPolicy: Never
-      tag: v2
+      tag: v4
       port: 80
   service:
-    type: LoadBalancer
+    type: NodePort
     port: 8000
+
+redis:
+  usePassword: true
+  password: "passwd"
 
 external:
   postgres:
@@ -24,5 +28,6 @@ external:
       pass: passwd
       db: myapp
 
-
-
+metrics:
+  serviceMonitor:
+    enabled: true

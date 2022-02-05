@@ -1,29 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name}}-deployment
+  name: {{ include "otus-hw03.fullname" . }}
+  labels:
+  {{- include "otus-hw03.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}-{{ .Chart.Type }}
+      {{- include "otus-hw03.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-{{ .Chart.Type }}
+      {{- include "otus-hw03.selectorLabels" . | nindent 8 }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.application.deployment.pod.repository}}:{{ .Values.application.deployment.pod.tag }}
           ports:
-            - name: web
+            - name: http
               containerPort: {{ .Values.application.deployment.pod.port }}
+              protocol: TCP
           env:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
                   key: databaseUrl
                   name: {{ .Chart.Name }}-secret
+            - name: REDIS_HOST
+              value: {{ (include "redis.fullname" .) }}-master
+            - name: REDIS_PASS
+              value: {{ .Values.redis.password }}
+
           livenessProbe:
             httpGet:
               port: {{ .Values.application.deployment.pod.port }}
@@ -41,12 +49,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Chart.Name }}-service
+  name: {{ include "otus-hw03.fullname" . }}
+  labels:
+  {{- include "otus-hw03.labels" . | nindent 4 }}
 spec:
   selector:
-    app: {{ .Chart.Name }}-{{ .Chart.Type }}
+  {{- include "otus-hw03.selectorLabels" . | nindent 4 }}
   ports:
     - protocol: TCP
       port: {{ .Values.application.service.port }}
-      targetPort: {{ .Values.application.deployment.pod.port }}
+      targetPort: http
+      name: web
   type: {{ .Values.application.service.type }}

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Subscriber;
 
-use Prometheus\CollectorRegistry;
+use App\Service\MetricsAdapter;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,18 +44,18 @@ class MetricsSubscriber implements EventSubscriberInterface
     ];
 
     /**
-     * @var CollectorRegistry
+     * @var MetricsAdapter
      */
-    private CollectorRegistry $prometheusRegistry;
+    private $metricsAdapter;
 
     /**
      * @var int
      */
     private $startTime;
 
-    public function __construct()
+    public function __construct(MetricsAdapter $metricsAdapter)
     {
-        $this->prometheusRegistry = CollectorRegistry::getDefault();
+        $this->metricsAdapter = $metricsAdapter;
     }
 
     /**
@@ -98,7 +98,7 @@ class MetricsSubscriber implements EventSubscriberInterface
         $endTime = time() - $this->startTime;
 
         /** Calc request count */
-        $requestCounter = $this->prometheusRegistry->getOrRegisterCounter(
+        $requestCounter = $this->metricsAdapter->getPrometheusRegistry()->getOrRegisterCounter(
             self::NAMESPACE,
             $this->metricsRequestCounter['name'],
             $this->metricsRequestCounter['help'],
@@ -112,7 +112,7 @@ class MetricsSubscriber implements EventSubscriberInterface
         ]);
 
         /** Calc request latency */
-        $requestLatencyHistogram = $this->prometheusRegistry->getOrRegisterHistogram(
+        $requestLatencyHistogram = $this->metricsAdapter->getPrometheusRegistry()->getOrRegisterHistogram(
             self::NAMESPACE,
             $this->metricsRequestLatency['name'],
             $this->metricsRequestLatency['help'],
