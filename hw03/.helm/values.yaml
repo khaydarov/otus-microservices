@@ -1,19 +1,15 @@
-replicaCount: 1
+replicaCount: 3
 
 application:
   deployment:
     pod:
       repository: khaydarov95/otus-hw03
       pullPolicy: Never
-      tag: v4
+      tag: v1
       port: 80
   service:
     type: NodePort
     port: 8000
-
-redis:
-  usePassword: true
-  password: "passwd"
 
 external:
   postgres:

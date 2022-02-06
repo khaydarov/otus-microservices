@@ -3,15 +3,15 @@ FROM php:8.1-cli
 COPY . /usr/src/app
 WORKDIR /usr/src/app
 
-# Install Postgre PDO
 RUN apt-get update
-RUN apt-get install -y libpq-dev \
-    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+RUN apt-get install -y libpq-dev
+
+# Install PostgreSQL PDO
+RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pdo pdo_pgsql pgsql
 
-RUN pecl install -o -f redis \
-&&  rm -rf /tmp/pear \
-&&  docker-php-ext-enable redis
+# Install Apcu
+RUN pecl install apcu && docker-php-ext-enable apcu
 
 EXPOSE 80
 

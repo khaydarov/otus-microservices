@@ -2,7 +2,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "otus-hw03.fullname" . }}
+  name: {{ include "otus-hw03.fullname" . }}-servicemonitor
   labels:
   {{- include "otus-hw03.labels" . | nindent 4 }}
 spec:

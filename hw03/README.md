@@ -14,3 +14,12 @@
 helm install otus-task2 .helm
 ```
 
+*Команда для нагрузочного тестирования*
+```shell
+while true; do ab -n 50 -c 5 http://arch.homework/; sleep 2; done;
+```
+
+## Todo
+2. make screenshots for PRS, latency
+3. install and configure ingress
+

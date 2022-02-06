@@ -1,4 +1,13 @@
 {
+    "composer/pcre": {
+        "version": "1.0.1"
+    },
+    "composer/semver": {
+        "version": "3.2.9"
+    },
+    "composer/xdebug-handler": {
+        "version": "3.0.1"
+    },
     "doctrine/annotations": {
         "version": "1.13",
         "recipe": {
@@ -79,11 +88,26 @@
     "doctrine/sql-formatter": {
         "version": "1.1.2"
     },
+    "friendsofphp/php-cs-fixer": {
+        "version": "3.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "be2103eb4a20942e28a6dd87736669b757132435"
+        },
+        "files": [
+            ".php-cs-fixer.dist.php"
+        ]
+    },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.5"
     },
     "laminas/laminas-code": {
         "version": "4.5.1"
+    },
+    "php-cs-fixer/diff": {
+        "version": "v2.0.2"
     },
     "promphp/prometheus_client_php": {
         "version": "v2.4.0"
@@ -185,6 +209,9 @@
     "symfony/http-kernel": {
         "version": "v6.0.2"
     },
+    "symfony/options-resolver": {
+        "version": "v6.0.3"
+    },
     "symfony/polyfill-intl-grapheme": {
         "version": "v1.24.0"
     },
@@ -196,6 +223,9 @@
     },
     "symfony/polyfill-php81": {
         "version": "v1.24.0"
+    },
+    "symfony/process": {
+        "version": "v6.0.3"
     },
     "symfony/routing": {
         "version": "6.0",

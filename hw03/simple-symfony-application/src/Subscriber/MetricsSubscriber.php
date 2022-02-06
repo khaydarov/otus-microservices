@@ -7,7 +7,6 @@ namespace App\Subscriber;
 use App\Service\MetricsAdapter;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -19,7 +18,7 @@ class MetricsSubscriber implements EventSubscriberInterface
     /**
      * @var string
      */
-    private const NAMESPACE = 'hw02';
+    private const NAMESPACE = 'hw03';
 
     /**
      * @var array

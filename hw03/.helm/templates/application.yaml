@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "otus-hw03.fullname" . }}
+  name: {{ include "otus-hw03.fullname" . }}-deployment
   labels:
   {{- include "otus-hw03.labels" . | nindent 4 }}
 spec:
@@ -27,11 +27,6 @@ spec:
                 secretKeyRef:
                   key: databaseUrl
                   name: {{ .Chart.Name }}-secret
-            - name: REDIS_HOST
-              value: {{ (include "redis.fullname" .) }}-master
-            - name: REDIS_PASS
-              value: {{ .Values.redis.password }}
-
           livenessProbe:
             httpGet:
               port: {{ .Values.application.deployment.pod.port }}
@@ -49,7 +44,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "otus-hw03.fullname" . }}
+  name: {{ include "otus-hw03.fullname" . }}-service
   labels:
   {{- include "otus-hw03.labels" . | nindent 4 }}
 spec:
