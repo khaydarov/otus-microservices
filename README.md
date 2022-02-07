@@ -4,29 +4,29 @@
 2. Основы работы с Docker
 3. Инфраструктурные паттерны
 4. Основы работы с Kubernetes (часть 1)
-5. Основы работы с Kubernetes (часть 2). [Домашнее задание](https://github.com/khaydarov/otus-microservices/tree/main/hw01)
-6. Основы работы с Kubernetes (часть 3). [Домашнее задание](https://github.com/khaydarov/otus-microservices/tree/main/hw02)
+5. Основы работы с Kubernetes (часть 2). [Домашнее задание №1](https://github.com/khaydarov/otus-microservices/tree/main/hw01)
+6. Основы работы с Kubernetes (часть 3). [Домашнее задание №2](https://github.com/khaydarov/otus-microservices/tree/main/hw02)
 7. Kubernetes. QA
 8. Мониторинг и алертинг
-9. Prometheus, Grafana. [Домашнее задание](https://github.com/khaydarov/otus-microservices/tree/main/hw03)
+9. Prometheus, Grafana. [Домашнее задание №3](https://github.com/khaydarov/otus-microservices/tree/main/hw03)
 10. Service mesh на примере Istio
 11. Авторизация и аутентификация в микросервисной архитектуре
-12. Backend for frontends. API Gateway. [Домашнее задание]()
+12. Backend for frontends. API Gateway. [Домашнее задание №4]()
 13. Асинхронный и синхронный API
 14. Event Driven Architecture
 15. Распределенные очереди сообщений на примере Kafka
-16. Паттерны поддержания консистентных данных (Stream processing). [Домашнее задание]()
+16. Паттерны поддержания консистентных данных (Stream processing). [Домашнее задание №5]()
 17. GraphQL, gRPC
 18. RESTful
-19. Идемпотентность и коммутативность API в HTTP и очередях. [Домашнее задание]()
+19. Идемпотентность и коммутативность API в HTTP и очередях. [Домашнее задание №6]()
 20. Тестирование микросервисов (часть 1)
 21. Тестирование микросервисов (часть 2)
 22. DDD и модульные монолиты (часть 1)
 23. DDD и модульные монолиты (часть 2)
-24. Паттерны декомпозиции микросервисов. [Домашнее задание]()
+24. Паттерны декомпозиции микросервисов. [Домашнее задание №7]()
 25. От монолита к микросервису
 26. Введение в распределенные системы
-27. Распределенные транзакции. [Домашнее задание]()
+27. Распределенные транзакции. [Домашнее задание №8]()
 28. Паттерны кэширования и основные принципы
 29. Шардирование
 30. CP системы
