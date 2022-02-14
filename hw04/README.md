@@ -42,7 +42,7 @@ kubectl label namespace monitoring istio-injection=enabled --overwrite
 Get access to service
 
 ```shell
-minikube service otus-hw04-service -n otus-hw04-ns
+minikube service -n istio-system istio-ingressgateway
 ```
 
 Send several requests (just refresh page)
