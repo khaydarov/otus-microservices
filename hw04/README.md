@@ -3,7 +3,7 @@
 Setup Istio
 
 ```shell
-istioctl install --set profile=default -y
+istioctl install --set profile.html=default -y
 ```
 
 Setup application deployments

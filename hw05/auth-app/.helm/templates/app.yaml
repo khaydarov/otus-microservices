@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-{{ .Chart.Type }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-{{ .Chart.Type }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.application.deployment.pod.repository}}:{{ .Values.application.deployment.pod.tag }}
+          ports:
+            - name: web
+              containerPort: {{ .Values.application.deployment.pod.port }}
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: DATABASE_URI
+                  name: {{ .Chart.Name }}-secret
+
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: JWT_SECRET
+                  name: {{ .Chart.Name }}-secret
+
+            - name: APP_PORT
+              value: {{ .Values.application.deployment.pod.port | quote }}
+
+            - name: USER_SERVICE
+              value: {{ .Values.external.user_service }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-service
+spec:
+  selector:
+    app: {{ .Chart.Name }}-{{ .Chart.Type }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.application.service.port }}
+      targetPort: {{ .Values.application.deployment.pod.port }}
+  type: {{ .Values.application.service.type }}

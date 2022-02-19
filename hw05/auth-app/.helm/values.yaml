@@ -1,0 +1,23 @@
+replicaCount: 1
+
+application:
+  deployment:
+    pod:
+      repository: khaydarov95/otus-hw05-auth-app
+      pullPolicy: Never
+      tag: v6
+      port: 80
+  service:
+    type: LoadBalancer
+    port: 8080
+
+postgresql:
+  enabled: true
+  postgresqlUsername: myuser
+  postgresqlPassword: passwd
+  postgresqlDatabase: myapp
+  service:
+    port: "5432"
+
+external:
+  user_service: http://otus-hw05-user-app-service.default.svc.cluster.local:8000

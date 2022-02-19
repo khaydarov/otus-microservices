@@ -1,0 +1,20 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: user-app-ingress # Перезаписываем уже существующий ingress
+  annotations:
+    nginx.ingress.kubernetes.io/auth-url: http://otus-hw05-auth-app-service.default.svc.cluster.local:8080/auth
+    nginx.ingress.kubernetes.io/auth-response-headers: x-auth-token
+spec:
+  rules:
+    - host: arch.homework
+      http:
+        paths:
+          - path: / # Направляем все запросы к otus-hw05-user-app-service
+            pathType: Prefix
+            backend:
+              service:
+                name: otus-hw05-user-app-service
+                port:
+                  number: 80
