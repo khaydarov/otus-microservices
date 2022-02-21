@@ -5,7 +5,7 @@ application:
     pod:
       repository: khaydarov95/otus-hw05-user-app
       pullPolicy: Never
-      tag: v2
+      tag: v1
       port: 80
   service:
     type: LoadBalancer

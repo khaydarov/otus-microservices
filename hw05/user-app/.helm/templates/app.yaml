@@ -25,6 +25,13 @@ spec:
                 secretKeyRef:
                   key: DATABASE_URI
                   name: {{ .Chart.Name }}-secret
+
+            - name: AUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: AUTH_SECRET
+                  name: {{ .Chart.Name }}-secret
+
           livenessProbe:
             httpGet:
               port: {{ .Values.application.deployment.pod.port }}

@@ -27,6 +27,7 @@ final class Version20220129223023 extends AbstractMigration
                 firstName varchar(48) NOT NULL,
                 lastName varchar(48) NOT NULL,
                 email text NOT NULL,
+                password text NOT NULL,
                 phone text NOT NULL
             )
         ');

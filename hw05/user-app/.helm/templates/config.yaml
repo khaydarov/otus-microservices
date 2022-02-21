@@ -11,3 +11,5 @@ data:
     .Values.postgresql.service.port
     .Values.postgresql.postgresqlDatabase
     | b64enc | quote }}
+
+  AUTH_SECRET: bXktc3RyaW5n
