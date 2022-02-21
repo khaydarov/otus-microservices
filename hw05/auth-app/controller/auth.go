@@ -2,7 +2,7 @@ package controller
 
 import (
 	"auth-app/repository"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 	"net/http"
 	"os"
 )
@@ -26,7 +26,7 @@ func Auth(sessionRepository repository.SessionRepository) func (w http.ResponseW
 		claims["expiration_in"] = session.ExpiresIn.Unix()
 		at := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-		token, err := at.SignedString([]byte(os.Getenv("ACCESS_SECRET")))
+		token, err := at.SignedString([]byte(os.Getenv("JWT_SECRET")))
 		if err != nil {
 			return
 		}

@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Auth;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,8 +40,8 @@ final class UserController extends AbstractController
      */
     public function getUsersAction(Request $request): JsonResponse
     {
-        $email = $request->query->get('email');
-        $password = $request->query->get('password');
+        $email = $request->query->get('email', '');
+        $password = $request->query->get('password', '');
 
         $user = $this->userRepository->findByEmailAndPassword($email, $password);
         if ($user === null) {
@@ -94,13 +97,21 @@ final class UserController extends AbstractController
      *
      * @return JsonResponse
      */
-    public function getUserAction(int $id): JsonResponse
+    public function getUserAction(Request $request, int $id): JsonResponse
     {
+        $auth = $this->getAuthData($request);
+        if ($auth === null || $auth->getId() !== $id) {
+            return $this->json([
+                'code' => 403,
+                'message' => 'Access denied'
+            ]);
+        }
+
         $user = $this->userRepository->findById($id);
 
         if ($user === null) {
             return $this->json([
-                'code' => 0,
+                'code' => 404,
                 'message' => 'User not found'
             ]);
         }
@@ -119,12 +130,21 @@ final class UserController extends AbstractController
      * @Route("/user/{id<\d+>}", name="putUserAction", methods={"PUT"})
      *
      * @param Request $request
+     * @param int $id
      *
      * @return JsonResponse
      */
-    public function putUserAction(int $id, Request $request): JsonResponse
+    public function putUserAction(Request $request, int $id): JsonResponse
     {
         try {
+            $auth = $this->getAuthData($request);
+            if ($auth === null || $auth->getId() !== $id) {
+                return $this->json([
+                    'code' => 403,
+                    'message' => 'Access denied'
+                ]);
+            }
+
             $user = $this->userRepository->findById($id);
             if ($user === null) {
                 return $this->json([
@@ -197,5 +217,28 @@ final class UserController extends AbstractController
                 'message' => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * @param Request $request
+     * @return Auth|null
+     */
+    private function getAuthData(Request $request): ?Auth
+    {
+        $authToken = $request->headers->get('x-auth-token', '');
+        if (empty($authToken)) {
+            return null;
+        }
+
+        $decoded = (array) JWT::decode($authToken, new Key($this->getParameter('auth_salt'), 'HS256'));
+        $now = new \DateTimeImmutable();
+        $expiration = new \DateTimeImmutable();
+        $expiration->setTimestamp($decoded['expiration_in']);
+
+        if ($now > $expiration) {
+            throw new \InvalidArgumentException('Token is expired');
+        }
+
+        return new Auth($decoded['user_id'], $decoded['user_email']);
     }
 }
