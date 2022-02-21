@@ -43,3 +43,8 @@ kubectl apply -f nginx-ingress/auth.yaml
 Service communation schema
 
 ![](auth-schema.png)
+
+## TODO
+
+- Add migration for auth-service
+- Postman tests
