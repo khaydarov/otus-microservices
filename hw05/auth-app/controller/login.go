@@ -1,79 +1,114 @@
 package controller
 
 import (
-	"auth-app/model"
+	"auth-app/entity"
 	"auth-app/repository"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"html/template"
-	"log"
 	"net/http"
 	"os"
 )
 
-// Login is a page action
-func Login(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		log.Println("rendering tmpl")
-		tmpl, err := template.ParseFiles("template/login.html")
-		if err == nil {
-			tmpl.Execute(w, nil)
+// Login is an action that authenticates user by `email` and `password`
+func Login(sessionRepository repository.SessionRepository) func (w http.ResponseWriter, r *http.Request) {
+	return func (w http.ResponseWriter, r *http.Request) {
+		defer func () {
+			if r := recover(); r != nil {
+				errorResponse(w, r.(string))
+			}
+		}()
+
+		err := r.ParseForm()
+		if err != nil {
+			errorResponse(w, err.Error())
+			return
 		}
 
-		return
-	}
+		sessionCookie, err := r.Cookie("session")
+		if err == nil && sessionCookie != nil {
+			session := sessionRepository.GetSession(sessionCookie.Value)
+			newSessionCookie := http.Cookie{
+				Name:     "session",
+				Value:    session.Id,
+				Expires:  session.ExpiresIn,
+				HttpOnly: true,
+			}
 
-	log.Println("login...")
-	err := r.ParseForm()
-	if err != nil {
-		errorResponse(w, err.Error())
-		return
-	}
+			http.SetCookie(w, &newSessionCookie)
+			successResponse(w, "Already authenticated!")
+			return
+		}
 
-	email := r.Form.Get("email")
-	user := getUserByEmail(email)
-	log.Println("user", user)
-	if user == nil {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-		return
-	}
+		email := r.Form.Get("email")
+		if email == "" {
+			errorResponse(w, "Email is empty")
+			return
+		}
 
-	session := repository.CreateSession(*user)
-	sessionCookie := http.Cookie{
-		Name:     "session",
-		Value:    session.Id,
-		Expires:  session.ExpiresIn,
-		HttpOnly: true,
-	}
+		password := r.Form.Get("password")
+		if password == "" {
+			errorResponse(w, "Password is empty")
+			return
+		}
 
-	err = repository.StoreSession(session)
-	if err != nil {
-		errorResponse(w, err.Error())
-		return
-	}
+		user, err := getUserByEmail(email, password)
+		if err != nil {
+			errorResponse(w, err.Error())
+			return
+		}
 
-	http.SetCookie(w, &sessionCookie)
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+		newSession := sessionRepository.CreateSession(*user)
+		newSessionCookie := http.Cookie{
+			Name:     "session",
+			Value:    newSession.Id,
+			Expires:  newSession.ExpiresIn,
+			HttpOnly: true,
+		}
+
+		err = sessionRepository.StoreSession(newSession)
+		if err != nil {
+			errorResponse(w, err.Error())
+			return
+		}
+
+		http.SetCookie(w, &newSessionCookie)
+		successResponse(w, "Authenticated!")
+	}
 }
 
-func getUserByEmail(email string) (user *model.User) {
+func getUserByEmail(email, password string) (user *entity.User, err error) {
 	defer func() {
 		if r := recover(); r != nil {
-			log.Printf("recovered: %s\n", r)
+			err = errors.New(r.(string))
 		}
 	}()
 
-	user = &model.User{}
-	log.Printf("Request: %s/users?email=%s", os.Getenv("USER_SERVICE"), email)
-	response, err := http.Get(fmt.Sprintf("%s/users?email=%s", os.Getenv("USER_SERVICE"), email))
+	response, err := http.Get(
+		fmt.Sprintf("%s/users?email=%s&password=%s",
+			os.Getenv("USER_SERVICE"),
+			email,
+			password,
+		))
+
 	if err != nil {
-		log.Printf("Response: %s\n", err)
-		return nil
+		return nil, err
 	}
 	defer response.Body.Close()
 
-	err = json.NewDecoder(response.Body).Decode(user)
+	if response.StatusCode == http.StatusInternalServerError {
+		return nil, errors.New("internal error")
+	}
+	if response.StatusCode == http.StatusBadRequest {
+		return nil, errors.New("login or password is not correct")
+	}
 
-	log.Println(user)
-	return user
+	user = &entity.User{}
+	err = json.NewDecoder(response.Body).Decode(&user)
+
+	if user.Id == 0 {
+		return nil, errors.New("login or password is not correct")
+	}
+
+	return user, nil
 }

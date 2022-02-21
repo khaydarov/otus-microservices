@@ -1,29 +1,36 @@
 package repository
 
 import (
-	"auth-app/model"
+	"auth-app/entity"
 	"context"
 	"github.com/google/uuid"
 	"github.com/jackc/pgtype"
 	"github.com/jackc/pgx/v4"
-	"os"
 	"time"
 )
 
-var connection *pgx.Conn
-
-func InitStorage() error {
-	var err error
-	connection, err = pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
-	if err != nil {
-		return err
-	}
-	return nil
+// SessionRepository is responsible for Session persistence
+type SessionRepository interface {
+	StoreSession(session entity.Session) error
+	CreateSession(user entity.User) entity.Session
+	GetSession(sessionId string) *entity.Session
 }
 
-func StoreSession(session model.Session) error {
+// NewSessionRepository creates new Psql implementation of session repo
+func NewSessionRepository(conn pgx.Conn) SessionRepository {
+	return &psqlSessionRepository{
+		conn,
+	}
+}
+
+type psqlSessionRepository struct {
+	db pgx.Conn
+}
+
+// StoreSession persists Session entity
+func (u *psqlSessionRepository) StoreSession(session entity.Session) error {
 	sqlStmt := `INSERT INTO t_sessions (id, expires_in, user_id, email) VALUES ($1, to_timestamp($2), $3, $4)`
-	_, err := connection.Exec(
+	_, err := u.db.Exec(
 		context.Background(),
 		sqlStmt,
 		session.Id,
@@ -35,8 +42,9 @@ func StoreSession(session model.Session) error {
 	return err
 }
 
-func CreateSession(user model.User) model.Session {
-	return model.Session{
+// CreateSession creates new Session entity
+func (u *psqlSessionRepository) CreateSession(user entity.User) entity.Session {
+	return entity.Session{
 		Id: uuid.New().String(),
 		UserId: user.Id,
 		UserEmail: user.Email,
@@ -44,7 +52,8 @@ func CreateSession(user model.User) model.Session {
 	}
 }
 
-func GetSession(sessionId string) *model.Session {
+// GetSession returns Session entity from storage
+func (u *psqlSessionRepository) GetSession(sessionId string) *entity.Session {
 	var (
 		expiresIn pgtype.Timestamp
 		userId int
@@ -52,12 +61,12 @@ func GetSession(sessionId string) *model.Session {
 	)
 
 	sqlStmt := `SELECT expires_in, user_id, email FROM t_sessions WHERE id = $1`
-	err := connection.QueryRow(context.Background(), sqlStmt, sessionId).Scan(&expiresIn, &userId, &userEmail)
+	err := u.db.QueryRow(context.Background(), sqlStmt, sessionId).Scan(&expiresIn, &userId, &userEmail)
 	if err != nil {
 		return nil
 	}
 
-	return &model.Session{
+	return &entity.Session{
 		Id:        sessionId,
 		UserId:    userId,
 		UserEmail: userEmail,

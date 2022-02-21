@@ -48,16 +48,21 @@ class UserRepository
 
     /**
      * @param string $email
+     * @param string $password
      *
      * @return User|null
      *
      * @throws \Doctrine\DBAL\Exception
      */
-    public function findByEmail(string $email): ?User
+    public function findByEmailAndPassword(string $email, string $password): ?User
     {
-        $row = $this->dbal->fetchAssociative("SELECT * FROM t_users WHERE email = :email", [
-            'email' => $email
-        ]);
+        $row = $this->dbal->fetchAssociative(
+            "SELECT * FROM t_users WHERE email = :email AND password = :password LIMIT 1",
+            [
+                'email' => $email,
+                'password' => $password
+            ]
+        );
 
         if (empty($row)) {
             return null;

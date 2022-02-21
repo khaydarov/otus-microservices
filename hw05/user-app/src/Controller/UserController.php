@@ -38,8 +38,9 @@ final class UserController extends AbstractController
     public function getUsersAction(Request $request): JsonResponse
     {
         $email = $request->query->get('email');
+        $password = $request->query->get('password');
 
-        $user = $this->userRepository->findByEmail($email);
+        $user = $this->userRepository->findByEmailAndPassword($email, $password);
         if ($user === null) {
             return $this->json([
                 'code' => 0,
