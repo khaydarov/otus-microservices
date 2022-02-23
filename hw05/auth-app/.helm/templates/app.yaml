@@ -12,6 +12,20 @@ spec:
       labels:
         app: {{ .Chart.Name }}-{{ .Chart.Type }}
     spec:
+      initContainers:
+        - name: check-db-readiness
+          image: postgres:latest
+          env:
+            - name: POSTGRES_HOST
+              value: {{ include "postgresql.fullname" . | quote }}
+            - name: POSTGRES_PORT
+              value: {{ .Values.postgresql.service.port | quote }}
+          command:
+            - sh
+            - "-c"
+            - |
+              until pg_isready -h $POSTGRES_HOST  -p  $POSTGRES_PORT;
+              do echo waiting for database; sleep 2; done;
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.application.deployment.pod.repository}}:{{ .Values.application.deployment.pod.tag }}

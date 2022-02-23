@@ -1,7 +1,7 @@
 package http
 
 import (
-	"auth-app/cmd/server"
+	"auth-app/cmd/app/server"
 	"auth-app/controller"
 	"auth-app/repository"
 	"fmt"

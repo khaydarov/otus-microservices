@@ -4,7 +4,7 @@ metadata:
   name: {{ .Chart.Name }}-secret
 type: Opaque
 data:
-  DATABASE_URI: {{ printf "postgresql://%s:%s@%s:%s/%s"
+  DATABASE_URI: {{ printf "postgres://%s:%s@%s:%s/%s"
     .Values.postgresql.postgresqlUsername
     .Values.postgresql.postgresqlPassword
     (include "postgresql.fullname" .)

@@ -15,7 +15,17 @@ func Login(sessionRepository repository.SessionRepository) func (w http.Response
 	return func (w http.ResponseWriter, r *http.Request) {
 		defer func () {
 			if r := recover(); r != nil {
-				errorResponse(w, r.(string))
+				switch x := r.(type) {
+				case string:
+					errorResponse(w, x)
+					break
+				case error:
+					errorResponse(w, x.Error())
+					break
+				default:
+					errorResponse(w, "unknown error")
+					break
+				}
 			}
 		}()
 
@@ -28,16 +38,19 @@ func Login(sessionRepository repository.SessionRepository) func (w http.Response
 		sessionCookie, err := r.Cookie("session")
 		if err == nil && sessionCookie != nil {
 			session := sessionRepository.GetSession(sessionCookie.Value)
-			newSessionCookie := http.Cookie{
-				Name:     "session",
-				Value:    session.Id,
-				Expires:  session.ExpiresIn,
-				HttpOnly: true,
-			}
+			if session != nil {
+				newSessionCookie := http.Cookie{
+					Name:     "session",
+					Value:    session.Id,
+					Path: "/",
+					Expires:  session.ExpiresIn,
+					HttpOnly: true,
+				}
 
-			http.SetCookie(w, &newSessionCookie)
-			successResponse(w, "Already authenticated!")
-			return
+				http.SetCookie(w, &newSessionCookie)
+				successResponse(w, "Already authenticated!")
+				return
+			}
 		}
 
 		email := r.Form.Get("email")
@@ -62,6 +75,7 @@ func Login(sessionRepository repository.SessionRepository) func (w http.Response
 		newSessionCookie := http.Cookie{
 			Name:     "session",
 			Value:    newSession.Id,
+			Path: "/",
 			Expires:  newSession.ExpiresIn,
 			HttpOnly: true,
 		}
@@ -84,12 +98,13 @@ func getUserByEmail(email, password string) (user *entity.User, err error) {
 		}
 	}()
 
-	response, err := http.Get(
-		fmt.Sprintf("%s/users?email=%s&password=%s",
-			os.Getenv("USER_SERVICE"),
-			email,
-			password,
-		))
+	endpoint := fmt.Sprintf("%s/users?email=%s&password=%s",
+		os.Getenv("USER_SERVICE"),
+		email,
+		password,
+	)
+
+	response, err := http.Get(endpoint)
 
 	if err != nil {
 		return nil, err
@@ -99,6 +114,8 @@ func getUserByEmail(email, password string) (user *entity.User, err error) {
 	if response.StatusCode == http.StatusInternalServerError {
 		return nil, errors.New("internal error")
 	}
+
+	fmt.Println(endpoint, response)
 	if response.StatusCode == http.StatusBadRequest {
 		return nil, errors.New("login or password is not correct")
 	}

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"auth-app/cmd/server"
-	"auth-app/cmd/server/http"
+	"auth-app/cmd/app/server"
+	"auth-app/cmd/app/server/http"
 	"auth-app/repository"
 	"context"
 	"github.com/jackc/pgx/v4"
