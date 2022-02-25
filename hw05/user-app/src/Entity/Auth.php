@@ -18,12 +18,12 @@ final class Auth
     /**
      * @var string
      */
-    private $email;
+    private $username;
 
-    public function __construct(int $id, string $email)
+    public function __construct(int $id, string $username)
     {
         $this->id = $id;
-        $this->email = $email;
+        $this->username = $username;
     }
 
     /**
@@ -37,8 +37,8 @@ final class Auth
     /**
      * @return string
      */
-    public function getEmail(): string
+    public function getUsername(): string
     {
-        return $this->email;
+        return $this->username;
     }
 }

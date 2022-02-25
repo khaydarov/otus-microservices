@@ -22,7 +22,7 @@ func Auth(sessionRepository repository.SessionRepository) func (w http.ResponseW
 
 		claims := jwt.MapClaims{}
 		claims["user_id"] = session.UserId
-		claims["user_email"] = session.UserEmail
+		claims["user_name"] = session.UserName
 		claims["expiration_in"] = session.ExpiresIn.Unix()
 		at := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 

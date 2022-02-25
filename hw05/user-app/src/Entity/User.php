@@ -21,6 +21,11 @@ class User
     /**
      * @var string
      */
+    private string $password;
+
+    /**
+     * @var string
+     */
     private string $firstName;
 
     /**
@@ -31,19 +36,14 @@ class User
     /**
      * @var string
      */
-    private string $email;
-
-    /**
-     * @var string
-     */
     private string $phone;
 
     public function __construct(
         int $id,
         string $username,
+        string $password,
         string $firstName,
         string $lastName,
-        string $email,
         string $phone
     ) {
         $this->id = $id;
@@ -52,6 +52,7 @@ class User
             throw new InvalidArgumentException("Username is empty");
         }
         $this->username = $username;
+        $this->password = $password;
 
         if (empty($firstName)) {
             throw new InvalidArgumentException("First name is empty");
@@ -62,11 +63,6 @@ class User
             throw new InvalidArgumentException("Last name is empty");
         }
         $this->lastName = $lastName;
-
-        if (empty($email)) {
-            throw new InvalidArgumentException("Email is empty");
-        }
-        $this->email = $email;
 
         if (empty($phone)) {
             throw new InvalidArgumentException("Phone is empty");
@@ -142,25 +138,6 @@ class User
     /**
      * @return string
      */
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    /**
-     * @param string $email
-     * @return $this
-     */
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
     public function getPhone(): string
     {
         return $this->phone;
@@ -175,5 +152,13 @@ class User
         $this->phone = $phone;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
     }
 }

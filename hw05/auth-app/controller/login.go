@@ -17,13 +17,13 @@ func Login(sessionRepository repository.SessionRepository) func (w http.Response
 			if r := recover(); r != nil {
 				switch x := r.(type) {
 				case string:
-					errorResponse(w, x)
+					errorResponse(w, x, http.StatusInternalServerError)
 					break
 				case error:
-					errorResponse(w, x.Error())
+					errorResponse(w, x.Error(), http.StatusInternalServerError)
 					break
 				default:
-					errorResponse(w, "unknown error")
+					errorResponse(w, "unknown error", http.StatusInternalServerError)
 					break
 				}
 			}
@@ -31,58 +31,40 @@ func Login(sessionRepository repository.SessionRepository) func (w http.Response
 
 		err := r.ParseForm()
 		if err != nil {
-			errorResponse(w, err.Error())
+			errorResponse(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		sessionCookie, err := r.Cookie("session")
-		if err == nil && sessionCookie != nil {
-			session := sessionRepository.GetSession(sessionCookie.Value)
-			if session != nil {
-				newSessionCookie := http.Cookie{
-					Name:     "session",
-					Value:    session.Id,
-					Path: "/",
-					Expires:  session.ExpiresIn,
-					HttpOnly: true,
-				}
-
-				http.SetCookie(w, &newSessionCookie)
-				successResponse(w, "Already authenticated!")
-				return
-			}
-		}
-
-		email := r.Form.Get("email")
-		if email == "" {
-			errorResponse(w, "Email is empty")
+		username := r.Form.Get("username")
+		if username == "" {
+			errorResponse(w, "Username is empty", http.StatusBadRequest)
 			return
 		}
 
 		password := r.Form.Get("password")
 		if password == "" {
-			errorResponse(w, "Password is empty")
+			errorResponse(w, "Password is empty", http.StatusBadRequest)
 			return
 		}
 
-		user, err := getUserByEmail(email, password)
+		user, err := getUserByUsername(username, password)
 		if err != nil {
-			errorResponse(w, err.Error())
+			errorResponse(w, err.Error(), http.StatusNotFound)
 			return
 		}
 
 		newSession := sessionRepository.CreateSession(*user)
 		newSessionCookie := http.Cookie{
-			Name:     "session",
-			Value:    newSession.Id,
-			Path: "/",
-			Expires:  newSession.ExpiresIn,
-			HttpOnly: true,
+			Name:     	"session",
+			Value:    	newSession.Id,
+			Path: 		"/",
+			Expires:  	newSession.ExpiresIn,
+			HttpOnly: 	true,
 		}
 
 		err = sessionRepository.StoreSession(newSession)
 		if err != nil {
-			errorResponse(w, err.Error())
+			errorResponse(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
@@ -91,16 +73,16 @@ func Login(sessionRepository repository.SessionRepository) func (w http.Response
 	}
 }
 
-func getUserByEmail(email, password string) (user *entity.User, err error) {
+func getUserByUsername(username, password string) (user *entity.User, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = errors.New(r.(string))
 		}
 	}()
 
-	endpoint := fmt.Sprintf("%s/users?email=%s&password=%s",
+	endpoint := fmt.Sprintf("%s/users?username=%s&password=%s",
 		os.Getenv("USER_SERVICE"),
-		email,
+		username,
 		password,
 	)
 

@@ -12,6 +12,7 @@ use Firebase\JWT\Key;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -40,21 +41,23 @@ final class UserController extends AbstractController
      */
     public function getUsersAction(Request $request): JsonResponse
     {
-        $email = $request->query->get('email', '');
+        $username = $request->query->get('username', '');
         $password = $request->query->get('password', '');
 
-        $user = $this->userRepository->findByEmailAndPassword($email, $password);
+        $user = $this->userRepository->findByUsernameAndPassword($username, $password);
         if ($user === null) {
             return $this->json([
                 'code' => 0,
                 'message' => 'User not found'
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         return $this->json([
             'id' => $user->getId(),
-            'email' => $user->getEmail(),
-        ]);
+            'username' => $user->getUsername(),
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName(),
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -71,15 +74,15 @@ final class UserController extends AbstractController
         $username = $requestData['username'] ?? '';
         $firstName = $requestData['firstName'] ?? '';
         $lastName = $requestData['lastName'] ?? '';
-        $email = $requestData['email'] ?? '';
+        $password = $requestData['password'] ?? '';
         $phone = $requestData['phone'] ?? '';
 
         $user = new User(
             $this->userRepository->nextIdentity(),
             $username,
+            $password,
             $firstName,
             $lastName,
-            $email,
             $phone
         );
 
@@ -87,7 +90,7 @@ final class UserController extends AbstractController
 
         return $this->json([
             'id' => $user->getId()
-        ]);
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -104,7 +107,7 @@ final class UserController extends AbstractController
             return $this->json([
                 'code' => 403,
                 'message' => 'Access denied'
-            ]);
+            ], Response::HTTP_FORBIDDEN);
         }
 
         $user = $this->userRepository->findById($id);
@@ -113,7 +116,7 @@ final class UserController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'message' => 'User not found'
-            ]);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         return $this->json([
@@ -121,9 +124,8 @@ final class UserController extends AbstractController
             'username' => $user->getUsername(),
             'firstName' => $user->getFirstName(),
             'lastName' => $user->getLastName(),
-            'email' => $user->getEmail(),
             'phone' => $user->getPhone()
-        ]);
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -142,7 +144,7 @@ final class UserController extends AbstractController
                 return $this->json([
                     'code' => 403,
                     'message' => 'Access denied'
-                ]);
+                ], Response::HTTP_FORBIDDEN);
             }
 
             $user = $this->userRepository->findById($id);
@@ -150,13 +152,12 @@ final class UserController extends AbstractController
                 return $this->json([
                     'code' => 404,
                     'message' => 'User not found'
-                ]);
+                ], Response::HTTP_NOT_FOUND);
             }
 
             $requestData = json_decode($request->getContent(), true);
             $firstName = $requestData['firstName'] ?? '';
             $lastName = $requestData['lastName'] ?? '';
-            $email = $requestData['email'] ?? '';
             $phone = $requestData['phone'] ?? '';
 
             if (!empty($firstName)) {
@@ -167,10 +168,6 @@ final class UserController extends AbstractController
                 $user->setLastName($lastName);
             }
 
-            if (!empty($email)) {
-                $user->setEmail($email);
-            }
-
             if (!empty($phone)) {
                 $user->setPhone($phone);
             }
@@ -178,13 +175,16 @@ final class UserController extends AbstractController
             $this->userRepository->update($user);
 
             return $this->json([
-                'id' => $user->getId()
-            ]);
+                'id' => $user->getId(),
+                'username' => $user->getUsername(),
+                'firstName' => $user->getFirstName(),
+                'lastName' => $user->getLastName(),
+            ], Response::HTTP_OK);
         } catch (\Throwable $e) {
             return $this->json([
                 'code' => 500,
                 'message' => $e->getMessage()
-            ]);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -201,21 +201,21 @@ final class UserController extends AbstractController
             $user = $this->userRepository->findById($id);
             if ($user === null) {
                 return $this->json([
-                    'code' => 0,
+                    'code' => 404,
                     'message' => 'User not found'
-                ]);
+                ], Response::HTTP_NOT_FOUND);
             }
 
             $this->userRepository->delete($user);
             return $this->json([
                 'code' => 0,
                 'message' => 'Success!'
-            ]);
+            ], Response::HTTP_OK);
         } catch (\Throwable $e) {
             return $this->json([
                 'code' => 500,
                 'message' => $e->getMessage()
-            ]);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -239,6 +239,6 @@ final class UserController extends AbstractController
             throw new \InvalidArgumentException('Token is expired');
         }
 
-        return new Auth($decoded['user_id'], $decoded['user_email']);
+        return new Auth($decoded['user_id'], $decoded['user_name']);
     }
 }

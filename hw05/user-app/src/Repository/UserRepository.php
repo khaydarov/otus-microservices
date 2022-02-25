@@ -39,27 +39,27 @@ class UserRepository
         return new User(
             $row['id'],
             $row['username'],
+            $row['password'],
             $row['firstname'],
             $row['lastname'],
-            $row['email'],
             $row['phone']
         );
     }
 
     /**
-     * @param string $email
+     * @param string $username
      * @param string $password
      *
      * @return User|null
      *
      * @throws \Doctrine\DBAL\Exception
      */
-    public function findByEmailAndPassword(string $email, string $password): ?User
+    public function findByUsernameAndPassword(string $username, string $password): ?User
     {
         $row = $this->dbal->fetchAssociative(
-            "SELECT * FROM t_users WHERE email = :email AND password = :password LIMIT 1",
+            "SELECT * FROM t_users WHERE username = :username AND password = :password LIMIT 1",
             [
-                'email' => $email,
+                'username' => $username,
                 'password' => $password
             ]
         );
@@ -71,9 +71,9 @@ class UserRepository
         return new User(
             $row['id'],
             $row['username'],
+            $row['password'],
             $row['firstname'],
             $row['lastname'],
-            $row['email'],
             $row['phone']
         );
     }
@@ -86,15 +86,15 @@ class UserRepository
     public function insert(User $user): void
     {
         $this->dbal->executeQuery(
-            "INSERT INTO t_users (id, username, firstname, lastname, email, phone)
-            VALUES (:id, :username, :firstname, :lastname, :email, :phone)
+            "INSERT INTO t_users (id, username, password, firstname, lastname, phone)
+            VALUES (:id, :username, :password, :firstname, :lastname, :phone)
         ",
         [
             'id' => $user->getId(),
             'username' => $user->getUsername(),
+            'password' => $user->getPassword(),
             'firstname' => $user->getFirstName(),
             'lastname' => $user->getLastName(),
-            'email' => $user->getEmail(),
             'phone' => $user->getPhone(),
         ]);
     }
@@ -111,7 +111,6 @@ class UserRepository
                 username = :username,
                 firstname = :firstname,
                 lastname = :lastname,
-                email = :email,
                 phone = :phone
                 WHERE id = :id
             ",
@@ -120,7 +119,6 @@ class UserRepository
                 'username' => $user->getUsername(),
                 'firstname' => $user->getFirstName(),
                 'lastname' => $user->getLastName(),
-                'email' => $user->getEmail(),
                 'phone' => $user->getPhone()
             ]
         );

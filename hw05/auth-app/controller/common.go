@@ -6,15 +6,17 @@ import (
 )
 
 func successResponse(w http.ResponseWriter, data interface{}) {
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"code": 200,
+		"code": http.StatusOK,
 		"data": data,
 	})
 }
 
-func errorResponse(w http.ResponseWriter, message string) {
+func errorResponse(w http.ResponseWriter, message string, status int) {
+	w.WriteHeader(status)
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"code": 500,
+		"code": status,
 		"message": message,
 	})
 }

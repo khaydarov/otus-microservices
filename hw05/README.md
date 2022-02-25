@@ -44,7 +44,12 @@ Service communation schema
 
 ![](auth-schema.png)
 
+Run Postman test scenario
+
+```shell
+bash .postman-test.sh
+```
+
 ## TODO
 
-- Add migration for auth-service
-- Postman tests
+- Experiment with traefik

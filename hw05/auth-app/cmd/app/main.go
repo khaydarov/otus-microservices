@@ -22,7 +22,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("DB connection error: %s", err)
 	}
-
+	defer connection.Close(context.Background())
 
 	httpServer := http.Server{
 		SessionRepository: repository.NewSessionRepository(*connection),

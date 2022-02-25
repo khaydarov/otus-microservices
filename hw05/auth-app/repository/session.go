@@ -29,14 +29,14 @@ type psqlSessionRepository struct {
 
 // StoreSession persists Session entity
 func (u *psqlSessionRepository) StoreSession(session entity.Session) error {
-	sqlStmt := `INSERT INTO t_sessions (id, expires_in, user_id, email) VALUES ($1, to_timestamp($2), $3, $4)`
+	sqlStmt := `INSERT INTO t_sessions (id, expires_in, user_id, user_name) VALUES ($1, to_timestamp($2), $3, $4)`
 	_, err := u.db.Exec(
 		context.Background(),
 		sqlStmt,
 		session.Id,
 		session.ExpiresIn.Unix(),
 		session.UserId,
-		session.UserEmail,
+		session.UserName,
 	)
 
 	return err
@@ -47,7 +47,7 @@ func (u *psqlSessionRepository) CreateSession(user entity.User) entity.Session {
 	return entity.Session{
 		Id: uuid.New().String(),
 		UserId: user.Id,
-		UserEmail: user.Email,
+		UserName: user.Name,
 		ExpiresIn: time.Now().Add(10 * 60 * time.Second),
 	}
 }
@@ -57,11 +57,11 @@ func (u *psqlSessionRepository) GetSession(sessionId string) *entity.Session {
 	var (
 		expiresIn pgtype.Timestamp
 		userId int
-		userEmail string
+		userName string
 	)
 
-	sqlStmt := `SELECT expires_in, user_id, email FROM t_sessions WHERE id = $1`
-	err := u.db.QueryRow(context.Background(), sqlStmt, sessionId).Scan(&expiresIn, &userId, &userEmail)
+	sqlStmt := `SELECT expires_in, user_id, user_name FROM t_sessions WHERE id = $1`
+	err := u.db.QueryRow(context.Background(), sqlStmt, sessionId).Scan(&expiresIn, &userId, &userName)
 	if err != nil {
 		return nil
 	}
@@ -69,7 +69,7 @@ func (u *psqlSessionRepository) GetSession(sessionId string) *entity.Session {
 	return &entity.Session{
 		Id:        sessionId,
 		UserId:    userId,
-		UserEmail: userEmail,
+		UserName:  userName,
 		ExpiresIn: expiresIn.Time,
 	}
 }

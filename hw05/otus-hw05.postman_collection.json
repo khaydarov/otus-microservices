@@ -1,0 +1,469 @@
+{
+	"info": {
+		"_postman_id": "8f1bfdfe-ab78-47d2-a045-27ae4b15edca",
+		"name": "otus-hw05",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Script1",
+			"item": [
+				{
+					"name": "Create user1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User creation must return identifier\", () => {",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"pm.collectionVariables.set('user1', pm.response.json().id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"user1\",\n    \"password\": \"passwd1\",\n    \"firstName\": \"usr1\",\n    \"lastName\": \"usr1\",\n    \"phone\": \"1111\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Access user1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"New user should not be available without auth\", () => {",
+									"    pm.response.to.have.status(403)",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/{{user1}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"{{user1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authenticate user1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User1 is authenticated\", () => {",
+									"    pm.response.to.have.status(200);",
+									"    pm.expect(pm.response.headers.get('Set-Cookie')).not.undefined",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "user1",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "passwd1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authorize user1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User gets auth token\", () => {",
+									"    pm.expect(pm.response.headers.get('X-Auth-Token')).not.undefined",
+									"});",
+									"",
+									"pm.collectionVariables.set('x-auth-token', pm.response.headers.get('X-Auth-Token'))"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/auth",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user1 firstname",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.request.headers.add({key: 'X-Auth-Token', value: pm.collectionVariables.get('x-auth-token') });"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User firstname changed\", () => {",
+									"    pm.expect(pm.response.json().firstName).to.be.eql(\"changed name\")",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"changed name\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/{{user1}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"{{user1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create user2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User creation must return identifier\", () => {",
+									"    pm.response.to.have.status(200);",
+									"    pm.expect(pm.response.json().id).not.undefined",
+									"})",
+									"pm.collectionVariables.set('user2', pm.response.json().id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"user2\",\n    \"password\": \"passwd2\",\n    \"firstName\": \"usr2\",\n    \"lastName\": \"usr2\",\n    \"phone\": \"123321\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authenticate user2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Authenticate user 2\", () => {",
+									"    pm.response.to.have.status(200);",
+									"    pm.expect(pm.response.headers.get('Set-Cookie')).not.undefined",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "user2",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "passwd2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authorize user2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('x-auth-token', pm.response.headers.get('X-Auth-Token'))"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/auth",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Access user1 from user2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"New user should not be available without auth\", () => {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.request.headers.add({key: 'X-Auth-Token', value: pm.collectionVariables.get('x-auth-token') });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/{{user1}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"{{user1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Access user2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"New user should not be available without auth\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.request.headers.add({key: 'X-Auth-Token', value: pm.collectionVariables.get('x-auth-token') });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/{{user2}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"{{user2}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "user1",
+			"value": ""
+		},
+		{
+			"key": "user2",
+			"value": ""
+		},
+		{
+			"key": "x-auth-token",
+			"value": ""
+		}
+	]
+}

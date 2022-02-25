@@ -64,11 +64,13 @@
     * API Gateway
     * Backend for Frontends
     * Паттерны аутентификации в API Gateway
-    * Curcuit Breaker, Retry
+    * Circuit Breaker, Retry
 
 
 13. Асинхронный и синхронный API
     * Асинхронный и синхронный API
+    * Message Bus, Enterprise Service Bus
+    * CQRS, Event Sourcing  
     * Оркестрация и хореография
     * Версионирование API
     * IDL, API design first

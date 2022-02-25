@@ -23,11 +23,10 @@ final class Version20220129223023 extends AbstractMigration
         $this->addSql('
             CREATE TABLE IF NOT EXISTS t_users (
                 id bigserial NOT NULL PRIMARY KEY,
-                username varchar(48) NOT NULL,
+                username varchar(48) UNIQUE NOT NULL,
+                password text NOT NULL,
                 firstName varchar(48) NOT NULL,
                 lastName varchar(48) NOT NULL,
-                email text NOT NULL,
-                password text NOT NULL,
                 phone text NOT NULL
             )
         ');
