@@ -31,8 +31,8 @@
 
 
 6. Kubernetes basics (part 3). [Homework #2](https://github.com/khaydarov/otus-microservices/tree/main/hw02)
-   * Шаблонизация с помощью Helm
-   * Сущности: Job, Secrets
+   * Templating with Helm
+   * Jobs, Secrets
 
 
 7. Kubernetes. QA
@@ -85,7 +85,7 @@
     * Kafka    
 
 
-16. Consistent data maintenance patterns (Stream processing). [Homework №6]()
+16. Consistent data maintenance patterns (Stream processing). [Homework #6]()
     * Transactional Log
     * Stream processing
     * Event Sourcing
