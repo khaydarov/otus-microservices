@@ -1,91 +1,101 @@
 ## otus-microservices
 
-1. Плюсы и минусы микросервисной архитектуры
-    * Архитектура и роль архитектора
-    * Боли монолита и микросервисов
-    * Основные паттерны в микросервисной архитектуре
+1. Pros and cons of microservice architecture
+    * Architecture and architect
+    * Monoliths and microservices
+    * Patterns of microservice architecture
     
 
-2. Основы работы с Docker
-   * Контейнеризация. Обзор
-   * Компоненты Docker: engine, cli, registry
-   * Сборка Dockerfile
-   * Практика: build, run, up, down, pull, push
+2. Docker basics
+   * Containerization. Overview
+   * Docker components: engine, cli, registry
+   * Building from Dockerfile
+   * Practice: build, run, up, down, pull, push
     
 
-3. Инфраструктурные паттерны
-   * Методология CI/CD
+3. Infrastructural patterns
+   * CI/CD methodology
    * VM vs Containers
-   * Паттерны деплоя
+   * Deployment patterns
    * Service discovery 
    * Health check
 
 
-4. Основы работы с Kubernetes (часть 1)
-   * Сущности Pod, ReplicaSet, Deployment    
+4. Kubernetes basics (part 1)
+   * Pods, ReplicaSets, Deployments
 
 
-5. Основы работы с Kubernetes (часть 2). [Домашнее задание №1](https://github.com/khaydarov/otus-microservices/tree/main/hw01)
-   * Сущности ConfigMap, Persistence Volume, Persistence Volume Claim
+5. Kubernetes basics (part 2). [Homework #1](https://github.com/khaydarov/otus-microservices/tree/main/hw01)
+   * ConfigMaps, Persistence Volumes, Persistence Volume Claims
    * Helm, Helm-dep, Ingress 
 
 
-6. Основы работы с Kubernetes (часть 3). [Домашнее задание №2](https://github.com/khaydarov/otus-microservices/tree/main/hw02)
+6. Kubernetes basics (part 3). [Homework #2](https://github.com/khaydarov/otus-microservices/tree/main/hw02)
    * Шаблонизация с помощью Helm
    * Сущности: Job, Secrets
 
 
 7. Kubernetes. QA
-8. Мониторинг и алертинг
+8. Monitoring and alerting
    * USE, RED и Four Golden Signals
    * SLI, SLO, SLA
-   * Паттерны сбора метрик
+   * Metric collection patterns
     
 
-9. Prometheus, Grafana. [Домашнее задание №3](https://github.com/khaydarov/otus-microservices/tree/main/hw03)
-   * Метрики Prometheus
+9. Prometheus, Grafana. [Homework #3](https://github.com/khaydarov/otus-microservices/tree/main/hw03)
+   * Prometheus
    * Grafana
    * AlertManager
    * PromQL 
     
 
-10. Service mesh на примере Istio [Домашнее задание №4](https://github.com/khaydarov/otus-microservices/tree/main/hw04)
-    * Архитектура Service Mesh на примере Istio
+10. Service mesh on the example of Istio [Homework #4](https://github.com/khaydarov/otus-microservices/tree/main/hw04)
+    * Service Mesh architecture
 
 
-11. Авторизация и аутентификация в микросервисной архитектуре
-    * Паттерны аутентификации в монолитах
+11. Authorization and authentication in microservice architecture
+    * Auth patterns in monoliths
     * Identity Provider и OIDC
-    * Token-Based аутентификация, JWT
+    * Token-Based authentication, JWT
     * Auth-Proxy
     
 
-12. Backend for frontends. API Gateway. [Домашнее задание №5](https://github.com/khaydarov/otus-microservices/tree/main/hw05)
+12. Backend for frontends. API Gateway. [Homework #5](https://github.com/khaydarov/otus-microservices/tree/main/hw05)
     * API Gateway
     * Backend for Frontends
-    * Паттерны аутентификации в API Gateway
+    * Auth patterns in API Gateway
     * Circuit Breaker, Retry
 
 
-13. Асинхронный и синхронный API
-    * Асинхронный и синхронный API
+13. Asynchronous and synchronous API
     * Message Bus, Enterprise Service Bus
     * CQRS, Event Sourcing  
-    * Оркестрация и хореография
-    * Версионирование API
+    * Orchestration and choreography
+    * API versioning
     * IDL, API design first
     * Anemic API vs Rich API
 
 
 14. Event Driven Architecture
-    * Паттерны проектирования событий
-    * Паттерны использования событий
+    * Designing event driven patterns
+    * Using event driven patterns
 
 
-15. Распределенные очереди сообщений на примере Kafka
-16. Паттерны поддержания консистентных данных (Stream processing). [Домашнее задание №6]()
+15. Distributed message brokers on the example of Kafka
+    * Kafka    
+
+
+16. Consistent data maintenance patterns (Stream processing). [Homework №6]()
+    * Transactional Log
+    * Stream processing
+    * Event Sourcing
+    * Change Data Capture
+
+
 17. GraphQL, gRPC
 18. RESTful
+
+
 19. Идемпотентность и коммутативность API в HTTP и очередях. [Домашнее задание №7]()
 20. Тестирование микросервисов (часть 1)
 21. Тестирование микросервисов (часть 2)
