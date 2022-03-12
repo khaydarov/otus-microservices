@@ -96,18 +96,18 @@
 18. RESTful
 
 
-19. Идемпотентность и коммутативность API в HTTP и очередях. [Домашнее задание №7]()
-20. Тестирование микросервисов (часть 1)
-21. Тестирование микросервисов (часть 2)
-22. DDD и модульные монолиты (часть 1)
-23. DDD и модульные монолиты (часть 2)
-24. Паттерны декомпозиции микросервисов. [Домашнее задание №8]()
-25. От монолита к микросервису
-26. Введение в распределенные системы
-27. Распределенные транзакции. [Домашнее задание №9]()
-28. Паттерны кэширования и основные принципы
-29. Шардирование
-30. CP системы
-31. AP системы
-32. Роль архитектора
-33. Стомость архитектуры. Артефакты архитектуры
+19. Idempotency and commutativity API in HTTP and message brokers. [Homework #7]()
+20. Testing in microservices (part 1)
+21. Тестирование микросервисов (part 2)
+22. DDD and modular monoliths (part 1)
+23. DDD and modular monoliths (part 2)
+24. Microservices decomposition. [Homework #8]()
+25. From monolith to microservices
+26. Distributed systems overview
+27. Distributed transactions. [Homework #9]()
+28. Caching patterns
+29. Sharding
+30. CP systems
+31. AP systems
+32. The role of the architect
+33. Architecture cost. Artifacts of architecture
