@@ -14,7 +14,7 @@ import (
 	"os"
 )
 
-const currentVersion = "v1"
+var postgresConnection *pgx.Conn
 
 func init() {
 	err := godotenv.Load()
@@ -24,11 +24,8 @@ func init() {
 }
 
 func main() {
-	connection, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
-	if err != nil {
-		log.Fatalf("DB connection error: %s", err)
-	}
-	defer connection.Close(context.Background())
+	initDb()
+	defer postgresConnection.Close(context.Background())
 
 	r := gin.Default()
 	r.GET("/", func (c *gin.Context) {
@@ -38,7 +35,6 @@ func main() {
 	r.Use(gin.CustomRecovery(func (c *gin.Context, recovered interface{}) {
 		if err, ok := recovered.(string); ok {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"code": http.StatusInternalServerError,
 				"error": err,
 			})
 
@@ -46,21 +42,28 @@ func main() {
 		}
 
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"code": http.StatusInternalServerError,
 			"error": "Internal error",
 		})
 	}))
 
-	group := r.Group(fmt.Sprintf("/%s", currentVersion))
-	{
-		group.POST("/register", web.Register(user.NewPsqlRepository(connection)))
-		group.POST("/login", web.Login(
-			user.NewPsqlRepository(connection),
-			session.NewSessionRepository(connection),
-		))
-		group.POST("/auth", web.Auth(user.NewPsqlRepository(connection)))
+	r.POST("/register", web.Register(
+		user.NewPsqlRepository(postgresConnection)),
+	)
+	r.POST("/login", web.Login(
+		user.NewPsqlRepository(postgresConnection),
+		session.NewSessionRepository(postgresConnection),
+	))
+	r.POST("/auth", web.Auth(user.NewPsqlRepository(postgresConnection)))
+	err := r.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
+	if err != nil {
+		log.Fatalf("Server is not started: %s", err)
 	}
-
-	r.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 }
 
+func initDb() {
+	var err error
+	postgresConnection, err = pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	if err != nil {
+		log.Fatalf("DB connection error: %s", err)
+	}
+}

@@ -1,6 +1,9 @@
 package account
 
-import "github.com/google/uuid"
+import (
+	"errors"
+	"github.com/google/uuid"
+)
 
 // NewID returns new identifier
 func NewID() ID {
@@ -23,9 +26,23 @@ type Account struct {
 	Balance int
 }
 
+func (a *Account) Deposit(amount int) error {
+	a.Balance += amount
+	return nil
+}
+
+func (a *Account) Withdraw(amount int) error {
+	if a.Balance < amount {
+		return errors.New("not enough money")
+	}
+
+	a.Balance -= amount
+	return nil
+}
+
 // NewAccount creates new account entity
-func NewAccount(ownerID string) Account {
-	return Account{
+func NewAccount(ownerID string) *Account {
+	return &Account{
 		ID: NewID(),
 		OwnerID: OwnerID{
 			Value: ownerID,

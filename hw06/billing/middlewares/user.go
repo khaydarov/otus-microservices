@@ -1,4 +1,4 @@
-package internal
+package middlewares
 
 type User struct {
 	ID 			string

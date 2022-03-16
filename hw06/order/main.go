@@ -35,7 +35,6 @@ func main() {
 	r.Use(middlewares.AuthMiddleware())
 	r.POST("/orders", controllers.CreateOrder(order.NewPsqlOrderRepository(connection)))
 	err = r.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
-
 	if err != nil {
 		log.Fatalf("Server is not started: %s", err)
 	}

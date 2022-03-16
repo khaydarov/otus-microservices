@@ -94,6 +94,11 @@
 
 17. GraphQL, gRPC
 18. RESTful
+    * Maturity levels;
+    * Anemic API and Rich API
+    * Restful Patterns
+    * JsonSchema, OpenAPI
+    * GraphQL
 
 
 19. Idempotency and commutativity API in HTTP and message brokers. [Homework #7]()
