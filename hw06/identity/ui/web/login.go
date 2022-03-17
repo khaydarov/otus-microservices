@@ -18,7 +18,6 @@ func Login(userRepository user.Repository, sessionRepository session.Repository)
 		var data loginData
 		if err := c.ShouldBindJSON(&data); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"code": http.StatusBadRequest,
 				"error": err.Error(),
 			})
 
@@ -29,7 +28,6 @@ func Login(userRepository user.Repository, sessionRepository session.Repository)
 
 		if actualUser == nil {
 			c.JSON(http.StatusNotFound, gin.H{
-				"code": http.StatusNotFound,
 				"error": "User not found",
 			})
 
@@ -44,7 +42,6 @@ func Login(userRepository user.Repository, sessionRepository session.Repository)
 		err := sessionRepository.Store(newSession)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"code": http.StatusInternalServerError,
 				"error": "Couldn't create session",
 			})
 
@@ -54,7 +51,6 @@ func Login(userRepository user.Repository, sessionRepository session.Repository)
 		token, err := session.CreateAccessToken(actualUser)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"code": http.StatusInternalServerError,
 				"error": "Couldn't create access token",
 			})
 
@@ -62,8 +58,10 @@ func Login(userRepository user.Repository, sessionRepository session.Repository)
 		}
 
 		c.JSON(200, gin.H{
-			"accessToken": token,
-			"refreshToken": newSession.Token.Value,
+			"data": gin.H{
+				"accessToken": token,
+				"refreshToken": newSession.Token.Value,
+			},
 		})
 	}
 }

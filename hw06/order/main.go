@@ -6,11 +6,17 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4"
 	"github.com/joho/godotenv"
+	"github.com/segmentio/kafka-go"
 	"hw06/order/controllers"
 	"hw06/order/internal/order"
 	"hw06/order/middlewares"
 	"log"
 	"os"
+)
+
+var (
+	db *pgx.Conn
+	kafkaWriter *kafka.Writer
 )
 
 func init() {
@@ -21,11 +27,11 @@ func init() {
 }
 
 func main() {
-	connection, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
-	if err != nil {
-		log.Fatalf("DB connection error: %s", err)
-	}
-	defer connection.Close(context.Background())
+	initDB()
+	defer db.Close(context.Background())
+
+	initKafkaWriter()
+	defer kafkaWriter.Close()
 
 	r := gin.New()
 	r.GET("/", func (c *gin.Context) {
@@ -33,9 +39,30 @@ func main() {
 	})
 
 	r.Use(middlewares.AuthMiddleware())
-	r.POST("/orders", controllers.CreateOrder(order.NewPsqlOrderRepository(connection)))
-	err = r.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
+	r.POST("/orders", controllers.CreateOrder(
+		order.NewPsqlOrderRepository(db),
+		kafkaWriter,
+	))
+
+	err := r.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 	if err != nil {
 		log.Fatalf("Server is not started: %s", err)
+	}
+}
+
+func initDB() {
+	var err error
+	db, err = pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	if err != nil {
+		log.Fatalf("DB connection error: %s", err)
+	}
+}
+
+func initKafkaWriter() {
+	kafkaWriter = &kafka.Writer{
+		Addr: kafka.TCP(os.Getenv("KAFKA_HOST")),
+		ErrorLogger: kafka.LoggerFunc(func (message string, args ...interface{}) {
+			log.Println(message, args)
+		}),
 	}
 }

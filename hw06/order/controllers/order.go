@@ -2,8 +2,11 @@ package controllers
 
 import (
 	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/segmentio/kafka-go"
 	"hw06/order/internal/order"
 	"hw06/order/middlewares"
 	"net/http"
@@ -16,7 +19,7 @@ type createOrderRequestData struct {
 }
 
 // CreateOrder creates new order
-func CreateOrder(orderRepository order.Repository) func (c *gin.Context) {
+func CreateOrder(orderRepository order.Repository, kafkaWriter *kafka.Writer) func (c *gin.Context) {
 	return func (c *gin.Context) {
 		credentials, ok := c.Get("user")
 		if !ok {
@@ -59,14 +62,40 @@ func CreateOrder(orderRepository order.Repository) func (c *gin.Context) {
 		response, _ := client.Do(request)
 		defer response.Body.Close()
 
+		kafkaWriter.Topic = "notifications"
 		if response.StatusCode != http.StatusOK {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error": "internal error",
 			})
 
-			// Send notification
+			message := map[string]string{
+				"text": "order was not created",
+				"userId": user.ID,
+			}
+
+			v, _ := json.Marshal(message)
+			kafkaWriter.WriteMessages(
+				context.Background(),
+				kafka.Message{
+					Value: v,
+				},
+			)
+
 			return
 		}
+
+		message := map[string]string{
+			"text": "order was created",
+			"userId": user.ID,
+		}
+
+		v, _ := json.Marshal(message)
+		kafkaWriter.WriteMessages(
+			context.Background(),
+			kafka.Message{
+				Value: v,
+			},
+		)
 
 		// Send notification
 		c.JSON(http.StatusCreated, gin.H{
