@@ -85,7 +85,7 @@
     * Kafka    
 
 
-16. Consistent data maintenance patterns (Stream processing). [Homework #6]()
+16. Consistent data maintenance patterns (Stream processing). [Homework #6](https://github.com/khaydarov/otus-microservices/tree/main/hw06)
     * Transactional Log
     * Stream processing
     * Event Sourcing
@@ -95,21 +95,25 @@
 17. GraphQL, gRPC
 18. RESTful
     * Maturity levels;
+    * HATEOS  
     * Anemic API and Rich API
     * Restful Patterns
     * JsonSchema, OpenAPI
     * GraphQL
 
 
-19. Idempotency and commutativity API in HTTP and message brokers. [Homework #7]()
+19. Idempotency and commutativity API in HTTP and message brokers. [Homework #7](https://github.com/khaydarov/otus-microservices/tree/main/hw07)
+    * Idempotency and commutativity
+    * Idempotent receiver
+
 20. Testing in microservices (part 1)
 21. Тестирование микросервисов (part 2)
 22. DDD and modular monoliths (part 1)
 23. DDD and modular monoliths (part 2)
-24. Microservices decomposition. [Homework #8]()
+24. Microservices decomposition. [Homework #8](https://github.com/khaydarov/otus-microservices/tree/main/hw08)
 25. From monolith to microservices
 26. Distributed systems overview
-27. Distributed transactions. [Homework #9]()
+27. Distributed transactions. [Homework #9](https://github.com/khaydarov/otus-microservices/tree/main/hw09)
 28. Caching patterns
 29. Sharding
 30. CP systems

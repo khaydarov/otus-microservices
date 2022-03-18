@@ -64,8 +64,8 @@ func CreateOrder(orderRepository order.Repository, kafkaWriter *kafka.Writer) fu
 
 		kafkaWriter.Topic = "notifications"
 		if response.StatusCode != http.StatusOK {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "internal error",
+			c.JSON(response.StatusCode, gin.H{
+				"error": "not enough money",
 			})
 
 			message := map[string]string{

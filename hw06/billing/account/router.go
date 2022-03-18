@@ -10,7 +10,7 @@ import (
 func RegisterRoutes(route *gin.RouterGroup, db *pgx.Conn) {
 	repository := NewRepository(db)
 
-	route.GET("/:id", GetAccount(repository))
+	route.GET("/", GetAccount(repository))
 	route.POST("/", CreateAccount(repository))
 	route.POST("/deposit", DepositAccount(repository))
 	route.POST("/withdraw", WithdrawAccount(repository))
@@ -52,10 +52,15 @@ func CreateAccount(repository Repository) func (c *gin.Context) {
 
 func GetAccount(repository Repository) func (c *gin.Context) {
 	return func (c *gin.Context) {
-		id := c.Param("id")
+		credentials, ok := c.Get("user")
+		if !ok {
+			c.JSON(http.StatusUnauthorized, "")
+			return
+		}
 
-		account := repository.GetByID(ID{
-			Value: id,
+		user := credentials.(middlewares.User)
+		account := repository.GetByOwnerID(OwnerID{
+			Value: user.ID,
 		})
 
 		if account == nil {
