@@ -1,3 +1,4 @@
 vendor/
 data/
 grafana_db/
+swagger-ui
