@@ -1,0 +1,448 @@
+{
+	"info": {
+		"_postman_id": "eddeeba7-5306-4bb6-bf2c-3992841b88ba",
+		"name": "otus-hw06",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Registration",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"login\", pm.variables.replaceIn('{{$randomUserName}}'))",
+							"pm.collectionVariables.set(\"firstName\", pm.variables.replaceIn('{{$randomFirstName}}'))",
+							"pm.collectionVariables.set(\"lastName\", pm.variables.replaceIn('{{$randomLastName}}'))"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set('password', pm.response.json().data.password);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"login\": \"{{login}}\",\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{identity}}/register",
+					"host": [
+						"{{identity}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set('accessToken', pm.response.json().data.accessToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"login\": \"{{login}}\",\n    \"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{identity}}/login",
+					"host": [
+						"{{identity}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deposit billing account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('check balance', () => {",
+							"    pm.expect(pm.response.json().data.balance).to.eq(",
+							"        pm.collectionVariables.get('amount')",
+							"    )",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set('amount', 1000)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": {{amount}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{billing}}/depositAccount",
+					"host": [
+						"{{billing}}"
+					],
+					"path": [
+						"depositAccount"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get account balance after deposit",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{billing}}/myAccount",
+					"host": [
+						"{{billing}}"
+					],
+					"path": [
+						"myAccount"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create order success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"create order with enough money\", () => {",
+							"    pm.response.to.have.status(201)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"{{$randomVerb}}\",\n    \"price\": 50\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{order}}/orders",
+					"host": [
+						"{{order}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check notifications after order success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('check notifications count', () => {",
+							"    pm.expect(pm.response.json().count()).eq(1)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{notification}}",
+					"host": [
+						"{{notification}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create order fail",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('create order when not enough money', () => {",
+							"    pm.response.to.have.status(400)",
+							"    pm.expect(pm.response.json().error).equal('not enough money')",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"{{$randomVerb}}\",\n    \"price\": 5000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{order}}/orders",
+					"host": [
+						"{{order}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get account balance after failed order creation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('create order when not enough money', () => {",
+							"    pm.response.to.have.status(200)",
+							"    pm.expect(pm.response.json().data.balance).eq(950)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{billing}}/myAccount",
+					"host": [
+						"{{billing}}"
+					],
+					"path": [
+						"myAccount"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check notifications after order failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('create order when not enough money', () => {",
+							"    pm.response.to.have.status(200)",
+							"    pm.expect(pm.response.json().count()).eq(2)",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{notification}}",
+					"host": [
+						"{{notification}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "login",
+			"value": ""
+		},
+		{
+			"key": "firstName",
+			"value": ""
+		},
+		{
+			"key": "lastName",
+			"value": ""
+		},
+		{
+			"key": "password",
+			"value": ""
+		},
+		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "accountID",
+			"value": ""
+		},
+		{
+			"key": "deposit",
+			"value": ""
+		},
+		{
+			"key": "amount",
+			"value": ""
+		}
+	]
+}

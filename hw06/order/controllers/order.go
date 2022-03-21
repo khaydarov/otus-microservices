@@ -48,7 +48,7 @@ func CreateOrder(orderRepository order.Repository, kafkaWriter *kafka.Writer) fu
 		}
 
 		// TODO: refactor
-		endpoint := fmt.Sprintf("%s/accounts/withdraw",
+		endpoint := fmt.Sprintf("%s/withdrawAccount",
 			os.Getenv("BILLING_SERVICE"),
 		)
 

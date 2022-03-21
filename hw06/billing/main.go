@@ -20,14 +20,14 @@ func main() {
 	initDb()
 	defer postgresConnection.Close(context.Background())
 
-	r := gin.New()
+	r := gin.Default()
 	r.GET("/", func (c *gin.Context) {
 		c.JSON(200, "Hello to billing service!")
 	})
 
 	// Register modules
 	r.Use(middlewares.AuthMiddleware())
-	account.RegisterRoutes(r.Group("/accounts"), postgresConnection)
+	account.RegisterRoutes(r.Group(""), postgresConnection)
 
 	err := r.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 	if err != nil {

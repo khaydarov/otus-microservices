@@ -10,10 +10,10 @@ import (
 func RegisterRoutes(route *gin.RouterGroup, db *pgx.Conn) {
 	repository := NewRepository(db)
 
-	route.GET("/", GetAccount(repository))
-	route.POST("/", CreateAccount(repository))
-	route.POST("/deposit", DepositAccount(repository))
-	route.POST("/withdraw", WithdrawAccount(repository))
+	route.POST("/accounts", CreateAccount(repository))
+	route.GET("/myAccount", GetAccount(repository))
+	route.POST("/depositAccount", DepositAccount(repository))
+	route.POST("/withdrawAccount", WithdrawAccount(repository))
 }
 
 type createRequest struct {
