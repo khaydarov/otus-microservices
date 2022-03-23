@@ -1,7 +1,7 @@
 image:
   repository: khaydarov95/otus-hw06-order-app
   pullPolicy: Never
-  tag: v1
+  tag: v3
 deployment:
   replicaCount: 1
   pod:
@@ -10,13 +10,12 @@ service:
   type: LoadBalancer
   port: 8082
 postgresql:
-  enabled: true
-  postgresqlUsername: postgres
-  postgresqlPassword: postgres
-  postgresqlDatabase: order
-  service:
-    port: "5432"
+  host: order-db-postgresql.otus-hw06.svc.cluster.local
+  username: postgres
+  password: postgres
+  database: order
+  port: "5432"
 external:
-  billing: http://otus-hw06-billing-service.otus-hw06.svc.cluster.local:8081
+  billing: http://billing-app-billing-service.otus-hw06.svc.cluster.local:8081
 kafka:
   dns: kafka.otus-hw06.svc.cluster.local:9092

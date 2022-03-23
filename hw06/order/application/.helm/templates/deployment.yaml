@@ -19,9 +19,9 @@ spec:
           image: postgres:latest
           env:
             - name: POSTGRES_HOST
-              value: {{ include "postgresql.fullname" . | quote }}
+              value: {{ .Values.postgresql.host | quote }}
             - name: POSTGRES_PORT
-              value: {{ .Values.postgresql.service.port | quote }}
+              value: {{ .Values.postgresql.port | quote }}
           command:
             - sh
             - "-c"

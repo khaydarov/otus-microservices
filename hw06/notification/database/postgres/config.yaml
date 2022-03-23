@@ -1,0 +1,6 @@
+auth:
+  username: postgres
+  postgresPassword: postgres
+  database: notification
+service:
+  port: "5432"

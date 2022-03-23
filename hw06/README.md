@@ -1,4 +1,16 @@
-## Installation
+## Table of contents
+- [General](#general)
+- [Installation](#installation)
+- [Testing](#testing)
+- [TODO](#todo)
+
+### General
+
+Service collaboration schema
+
+Swagger
+
+### Installation
 
 Create a namespace
 
@@ -33,13 +45,21 @@ helm install billing-db bitnami/postgresql -f database/postgres/config.yaml
 helm install billing-app application/.helm
 ```
 
-Install `Order-Service`
+Install postgres and setup order-app
 ```shell
 cd order
-helm install otus-hw06-order-service .helm
+helm install order-db bitnami/postgresql -f database/postgres/config.yaml
+helm install order-app application/.helm
 ```
 
-## Testing
+Install postgres and setup notification-app
+```shell
+cd notification
+helm install notification-db bitnami/postgresql -f database/postgres/config.yaml
+helm install order-app application/.helm
+```
+
+### Testing
 
 Run Postman test scenario
 
@@ -47,10 +67,9 @@ Run Postman test scenario
 bash .postman-test.sh
 ```
 
----
-- Deployment
-    - Dockerfile for migrations
-    - Helm charts
-- Set up probes
-- Set up HPA
-- Metrics for prometheus
+### TODO
+
+- Setup liveness/readyness probes
+- Setup HPA
+- Setup grafana/prometheus
+- Collect metrics
