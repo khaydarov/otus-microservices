@@ -1,0 +1,13 @@
+FROM golang:1.17-alpine
+
+COPY . /app
+WORKDIR /app
+# Build main service binary
+RUN go build -o app main.go
+
+# Build migration binary
+RUN go build -o migration migrations/main.go
+
+EXPOSE 80
+
+CMD [ "./app" ]

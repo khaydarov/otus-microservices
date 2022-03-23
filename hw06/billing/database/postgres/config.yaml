@@ -1,0 +1,6 @@
+auth:
+  username: postgres
+  postgresPassword: postgres
+  database: billing
+service:
+  port: "5432"

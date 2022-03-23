@@ -52,7 +52,7 @@ func main() {
 
 func initDB() {
 	var err error
-	db, err = pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	db, err = pgx.Connect(context.Background(), os.Getenv("DATABASE_URI"))
 	if err != nil {
 		log.Fatalf("DB connection error: %s", err)
 	}

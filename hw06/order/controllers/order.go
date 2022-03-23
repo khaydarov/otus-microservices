@@ -9,6 +9,7 @@ import (
 	"github.com/segmentio/kafka-go"
 	"hw06/order/internal/order"
 	"hw06/order/middlewares"
+	"log"
 	"net/http"
 	"os"
 )
@@ -90,12 +91,13 @@ func CreateOrder(orderRepository order.Repository, kafkaWriter *kafka.Writer) fu
 		}
 
 		v, _ := json.Marshal(message)
-		kafkaWriter.WriteMessages(
+		err = kafkaWriter.WriteMessages(
 			context.Background(),
 			kafka.Message{
 				Value: v,
 			},
 		)
+		log.Printf("kafka error: %s\n", err)
 
 		// Send notification
 		c.JSON(http.StatusCreated, gin.H{

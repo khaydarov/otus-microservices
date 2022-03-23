@@ -62,7 +62,7 @@ func main() {
 
 func initDb() {
 	var err error
-	postgresConnection, err = pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	postgresConnection, err = pgx.Connect(context.Background(), os.Getenv("DATABASE_URI"))
 	if err != nil {
 		log.Fatalf("DB connection error: %s", err)
 	}

@@ -1,0 +1,21 @@
+application:
+  deployment:
+    pod:
+      repository: khaydarov95/otus-hw06-user-app
+      pullPolicy: Never
+      tag: v4
+      port: 80
+      replicaCount: 1
+  service:
+    type: LoadBalancer
+    port: 8080
+
+postgresql:
+  host: user-db-postgresql.otus-hw06.svc.cluster.local
+  port: "5432"
+  username: postgres
+  password: postgres
+  database: users
+
+external:
+  billing: http://billing-app-billing-service.otus-hw06.svc.cluster.local:8081
