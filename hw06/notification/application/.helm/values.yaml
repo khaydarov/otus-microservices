@@ -1,0 +1,27 @@
+application:
+  image:
+    repository: khaydarov95/otus-hw06-notification-service
+    pullPolicy: Never
+    tag: v2
+  deployment:
+    replicaCount: 1
+    pod:
+      port: 80
+  service:
+    type: LoadBalancer
+    port: 8083
+consumer:
+  image:
+    repository: khaydarov95/otus-hw06-notification-consumer
+    pullPolicy: Never
+    tag: v2
+  deployment:
+    replicaCount: 1
+postgresql:
+  host: notification-db-postgresql.otus-hw06.svc.cluster.local
+  username: postgres
+  password: postgres
+  database: notification
+  port: "5432"
+kafka:
+  dns: kafka.otus-hw06.svc.cluster.local:9092

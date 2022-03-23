@@ -56,7 +56,7 @@ Install postgres and setup notification-app
 ```shell
 cd notification
 helm install notification-db bitnami/postgresql -f database/postgres/config.yaml
-helm install order-app application/.helm
+helm install notification-app application/.helm
 ```
 
 ### Testing
@@ -69,7 +69,8 @@ bash .postman-test.sh
 
 ### TODO
 
-- Setup liveness/readyness probes
+- Common naming enhancements
+- Setup liveness/readiness probes
 - Setup HPA
 - Setup grafana/prometheus
 - Collect metrics

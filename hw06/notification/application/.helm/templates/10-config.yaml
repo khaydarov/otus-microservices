@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Chart.Name }}-secret
+type: Opaque
+data:
+  DATABASE_URI: {{ printf "postgres://%s:%s@%s:%s/%s"
+    .Values.postgresql.username
+    .Values.postgresql.password
+    .Values.postgresql.host
+    .Values.postgresql.port
+    .Values.postgresql.database
+    | b64enc | quote }}
+
+  JWT_SECRET: bXktc3RyaW5n
