@@ -1,8 +1,8 @@
 application:
   image:
-    repository: khaydarov95/otus-hw06-notification-service
+    repository: khaydarov95/otus-hw06-notification-app
     pullPolicy: Never
-    tag: v2
+    tag: v1
   deployment:
     replicaCount: 1
     pod:
@@ -14,7 +14,7 @@ consumer:
   image:
     repository: khaydarov95/otus-hw06-notification-consumer
     pullPolicy: Never
-    tag: v2
+    tag: v1
   deployment:
     replicaCount: 1
 postgresql:

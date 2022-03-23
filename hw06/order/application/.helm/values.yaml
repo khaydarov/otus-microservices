@@ -1,7 +1,7 @@
 image:
   repository: khaydarov95/otus-hw06-order-app
   pullPolicy: Never
-  tag: v3
+  tag: v1
 deployment:
   replicaCount: 1
   pod:

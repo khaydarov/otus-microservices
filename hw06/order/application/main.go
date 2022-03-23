@@ -39,7 +39,7 @@ func main() {
 	})
 
 	r.Use(middlewares.AuthMiddleware())
-	r.POST("/orders", controllers.CreateOrder(
+	r.POST("/", controllers.CreateOrder(
 		order.NewPsqlOrderRepository(db),
 		kafkaWriter,
 	))

@@ -42,11 +42,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{identity}}/register",
+					"raw": "{{baseUrl}}/users/register",
 					"host": [
-						"{{identity}}"
+						"{{baseUrl}}"
 					],
 					"path": [
+						"users",
 						"register"
 					]
 				}
@@ -88,11 +89,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{identity}}/login",
+					"raw": "{{baseUrl}}/users/login",
 					"host": [
-						"{{identity}}"
+						"{{baseUrl}}"
 					],
 					"path": [
+						"users",
 						"login"
 					]
 				}
@@ -148,11 +150,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{billing}}/depositAccount",
+					"raw": "{{baseUrl}}/billing/depositAccount",
 					"host": [
-						"{{billing}}"
+						"{{baseUrl}}"
 					],
 					"path": [
+						"billing",
 						"depositAccount"
 					]
 				}
@@ -175,11 +178,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{billing}}/myAccount",
+					"raw": "{{baseUrl}}/billing/myAccount",
 					"host": [
-						"{{billing}}"
+						"{{baseUrl}}"
 					],
 					"path": [
+						"billing",
 						"myAccount"
 					]
 				}
@@ -224,9 +228,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{order}}/orders",
+					"raw": "{{baseUrl}}/orders",
 					"host": [
-						"{{order}}"
+						"{{baseUrl}}"
 					],
 					"path": [
 						"orders"
@@ -264,9 +268,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{notification}}",
+					"raw": "{{baseUrl}}/notifications",
 					"host": [
-						"{{notification}}"
+						"{{baseUrl}}"
+					],
+					"path": [
+						"notifications"
 					]
 				}
 			},
@@ -320,9 +327,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{order}}/orders",
+					"raw": "{{baseUrl}}/orders",
 					"host": [
-						"{{order}}"
+						"{{baseUrl}}"
 					],
 					"path": [
 						"orders"
@@ -361,11 +368,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{billing}}/myAccount",
+					"raw": "{{baseUrl}}/billing/myAccount",
 					"host": [
-						"{{billing}}"
+						"{{baseUrl}}"
 					],
 					"path": [
+						"billing",
 						"myAccount"
 					]
 				}
@@ -402,9 +410,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{notification}}",
+					"raw": "{{baseUrl}}/notifications",
 					"host": [
-						"{{notification}}"
+						"{{baseUrl}}"
+					],
+					"path": [
+						"notifications"
 					]
 				}
 			},
