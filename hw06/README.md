@@ -8,7 +8,11 @@
 
 Service collaboration schema
 
-Swagger
+![](structure.png)
+
+[OpenAPI spec](./api-spec/static/open-api.yaml)
+
+![](swagger.png)
 
 ### Installation
 
