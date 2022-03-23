@@ -63,6 +63,11 @@ helm install notification-db bitnami/postgresql -f database/postgres/config.yaml
 helm install notification-app application/.helm
 ```
 
+Setup Api Gateway
+```shell
+kubectl apply -f api-gateway/ingress.yaml
+```
+
 ### Testing
 
 Run Postman test scenario

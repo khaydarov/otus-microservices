@@ -1,0 +1,80 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: otus-hw06-user-app-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: arch.homework
+      http:
+        paths:
+          - path: /users(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: user-app-user-service
+                port:
+                  number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: otus-hw06-billing-app-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: arch.homework
+      http:
+        paths:
+          - path: /billing(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: billing-app-billing-service
+                port:
+                  number: 8081
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: otus-hw06-order-app-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: arch.homework
+      http:
+        paths:
+        - path: /orders(/|$)(.*)
+          pathType: Prefix
+          backend:
+            service:
+              name: order-app-order-service
+              port:
+                number: 8082
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: otus-hw06-notification-app-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: arch.homework
+      http:
+        paths:
+          - path: /notifications(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: notification-app-notification-service
+                port:
+                  number: 8083
