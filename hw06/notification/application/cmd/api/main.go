@@ -27,6 +27,7 @@ func main() {
 
 	r := gin.New()
 	r.Use(middlewares.AuthMiddleware())
+	r.GET("/health", health())
 	r.GET("/", func (c *gin.Context) {
 		credentials, ok := c.Get("user")
 		if !ok {
@@ -51,5 +52,19 @@ func main() {
 	err := r.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 	if err != nil {
 		log.Fatalf("Server is not started: %s", err)
+	}
+}
+
+func health() func (c *gin.Context) {
+	return func (c *gin.Context) {
+		connection := database.GetConnection()
+		err := connection.Ping(context.Background())
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "Unhealthy")
+
+			return
+		}
+
+		c.JSON(http.StatusOK, "Healthy")
 	}
 }

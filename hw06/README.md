@@ -79,7 +79,6 @@ bash .postman-test.sh
 ### TODO
 
 - Common naming enhancements
-- Setup liveness/readiness probes
-- Setup HPA
 - Setup grafana/prometheus
 - Collect metrics
+- Setup HPA

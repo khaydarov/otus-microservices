@@ -3,7 +3,7 @@ application:
     pod:
       repository: khaydarov95/otus-hw06-user-app
       pullPolicy: Never
-      tag: v1
+      tag: v2
       port: 80
       replicaCount: 1
   service:

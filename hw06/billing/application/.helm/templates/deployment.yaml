@@ -49,3 +49,16 @@ spec:
             - name: http
               containerPort: {{ .Values.deployment.pod.port }}
               protocol: TCP
+          livenessProbe:
+            httpGet:
+              port: 80
+              path: /health
+            initialDelaySeconds: 2
+            periodSeconds: 3
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              port: 80
+              path: /
+            initialDelaySeconds: 2
+            periodSeconds: 2

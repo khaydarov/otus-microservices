@@ -1,7 +1,7 @@
 image:
   repository: khaydarov95/otus-hw06-billing-app
   pullPolicy: Never
-  tag: v1
+  tag: v2
 deployment:
   replicaCount: 1
   pod:

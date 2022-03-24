@@ -11,6 +11,7 @@ import (
 	"hw06/order/internal/order"
 	"hw06/order/middlewares"
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -37,6 +38,7 @@ func main() {
 	r.GET("/", func (c *gin.Context) {
 		c.JSON(200, "Hello to order service!")
 	})
+	r.GET("/health", health())
 
 	r.Use(middlewares.AuthMiddleware())
 	r.POST("/", controllers.CreateOrder(
@@ -64,5 +66,18 @@ func initKafkaWriter() {
 		ErrorLogger: kafka.LoggerFunc(func (message string, args ...interface{}) {
 			log.Println(message, args)
 		}),
+	}
+}
+
+func health() func (c *gin.Context) {
+	return func (c *gin.Context) {
+		err := db.Ping(context.Background())
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "Unhealthy")
+
+			return
+		}
+
+		c.JSON(http.StatusOK, "Healthy")
 	}
 }

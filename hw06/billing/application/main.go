@@ -9,6 +9,7 @@ import (
 	"hw06/billing/account"
 	"hw06/billing/middlewares"
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -24,6 +25,7 @@ func main() {
 	r.GET("/", func (c *gin.Context) {
 		c.JSON(200, "Hello to billing service!")
 	})
+	r.GET("/health", health())
 
 	// Register modules
 	r.Use(middlewares.AuthMiddleware())
@@ -47,5 +49,18 @@ func initDb() {
 	postgresConnection, err = pgx.Connect(context.Background(), os.Getenv("DATABASE_URI"))
 	if err != nil {
 		log.Fatalf("DB connection error: %s", err)
+	}
+}
+
+func health() func (c *gin.Context) {
+	return func (c *gin.Context) {
+		err := postgresConnection.Ping(context.Background())
+		if err == nil {
+			c.JSON(http.StatusOK, "Healthy")
+
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, "Unhealthy")
 	}
 }
