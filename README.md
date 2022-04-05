@@ -105,6 +105,11 @@
 19. Idempotency and commutativity API in HTTP and message brokers. [Homework #7](https://github.com/khaydarov/otus-microservices/tree/main/hw07)
     * Idempotency and commutativity
     * Idempotent receiver
+    * Idempotent consumer
+    * Polling publisher
+    * Compare-and-Set
+    * Transaction Log Miner
+    
 
 20. Testing in microservices (part 1)
 21. Тестирование микросервисов (part 2)
