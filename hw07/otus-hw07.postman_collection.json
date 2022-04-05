@@ -1,0 +1,152 @@
+{
+	"info": {
+		"_postman_id": "c9d2ab48-0701-4c47-9423-db3198cb2786",
+		"name": "otus-hw07",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create new order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"order creation\", () => {",
+							"    pm.response.to.have.status(201);",
+							"    pm.collectionVariables.set('orderID', pm.response.json().data.id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set('title', pm.variables.replaceIn('{{$randomVerb}}'));",
+							"pm.collectionVariables.set('price', pm.variables.replaceIn('{{$randomInt}}'));",
+							"pm.collectionVariables.set('idempotencyKey', pm.variables.replaceIn('{{$randomUUID}}'));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzIjoxNjQ5MTkwMDgzLCJmaXJzdE5hbWUiOiJTYW1wbGUgZmlyc3RuYW1lIiwiaWQiOiJhNzIxMTE5Ni0xMTM3LTRhZjYtYTBlYS00Yzk2OTAxNDQ3NzUiLCJsYXN0TmFtZSI6IlNhbXBsZSBsYXN0bmFtZSJ9.vGV231lSZfCLwDPyVkfj1mIqNfYWjABb6yAvscYxLjo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "IdempotencyKey",
+						"value": "{{idempotencyKey}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"{{title}}\",\n    \"price\": {{price}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/orders",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create same order again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"check idempotent order uuid\", () => {",
+							"    pm.response.to.have.status(201);",
+							"    pm.expect(pm.response.json().data.id).eq(",
+							"        pm.collectionVariables.get('orderID')",
+							"    )",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzIjoxNjQ5MTkwMDgzLCJmaXJzdE5hbWUiOiJTYW1wbGUgZmlyc3RuYW1lIiwiaWQiOiJhNzIxMTE5Ni0xMTM3LTRhZjYtYTBlYS00Yzk2OTAxNDQ3NzUiLCJsYXN0TmFtZSI6IlNhbXBsZSBsYXN0bmFtZSJ9.vGV231lSZfCLwDPyVkfj1mIqNfYWjABb6yAvscYxLjo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "idempotencyKey",
+						"value": "{{idempotencyKey}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"{{title}}\",\n    \"price\": {{price}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/orders",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "idempotencyKey",
+			"value": ""
+		},
+		{
+			"key": "title",
+			"value": ""
+		},
+		{
+			"key": "price",
+			"value": ""
+		},
+		{
+			"key": "orderID",
+			"value": ""
+		}
+	]
+}

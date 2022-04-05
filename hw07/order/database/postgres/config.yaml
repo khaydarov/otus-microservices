@@ -4,6 +4,5 @@ auth:
   database: order
 primary:
   service:
-    type: LoadBalancer
     ports:
       postgresql: "5432"

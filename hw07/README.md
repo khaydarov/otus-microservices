@@ -26,8 +26,25 @@ helm install billing-app application/.helm
 ```
 
 Install postgres and setup order-app
+
+> Order service creation uses idempotent receiver pattern
+
 ```shell
 cd order
 helm install order-db bitnami/postgresql -f database/postgres/config.yaml
 helm install order-app application/.helm
+```
+
+
+Setup Api Gateway
+```shell
+kubectl apply -f api-gateway/ingress.yaml
+```
+
+### Testing
+
+Run Postman test scenario
+
+```shell
+bash .postman-test.sh
 ```

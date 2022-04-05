@@ -85,38 +85,34 @@ func CreateOrder(orderService *order.Service, kafkaWriter *kafka.Writer) func (c
 
 		kafkaWriter.Topic = "notifications"
 		if response.StatusCode != http.StatusOK {
-			c.JSON(response.StatusCode, gin.H{
-				"error": "not enough money",
-			})
-
 			message := map[string]string{
 				"text": "order was not created",
 				"userId": user.ID,
 			}
 
 			v, _ := json.Marshal(message)
-			kafkaWriter.WriteMessages(
+			err = kafkaWriter.WriteMessages(
 				context.Background(),
 				kafka.Message{
 					Value: v,
 				},
 			)
+		} else {
+			message := map[string]string{
+				"text": "order was created",
+				"userId": user.ID,
+			}
 
-			return
+			v, _ := json.Marshal(message)
+			err = kafkaWriter.WriteMessages(
+				context.Background(),
+				kafka.Message{
+					Value: v,
+				},
+			)
 		}
 
-		message := map[string]string{
-			"text": "order was created",
-			"userId": user.ID,
-		}
 
-		v, _ := json.Marshal(message)
-		err = kafkaWriter.WriteMessages(
-			context.Background(),
-			kafka.Message{
-				Value: v,
-			},
-		)
 		log.Printf("kafka error: %s\n", err)
 
 		// Send notification
