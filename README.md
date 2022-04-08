@@ -112,7 +112,16 @@
     
 
 20. Testing in microservices (part 1)
-21. Тестирование микросервисов (part 2)
+    * Architecture Significant Requirements
+    * Availability, Interoperability, Modifiability
+    * Architecture Frameworks
+    * Quality Attributes Assessment
+
+
+21. Testing in microservices (part 2)
+    * Chaos engineering
+    * Stress testing    
+
 22. DDD and modular monoliths (part 1)
 23. DDD and modular monoliths (part 2)
 24. Microservices decomposition. [Homework #8](https://github.com/khaydarov/otus-microservices/tree/main/hw08)
