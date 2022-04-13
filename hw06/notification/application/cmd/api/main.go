@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"hw06/notification/database"
 	"hw06/notification/middlewares"
 	"hw06/notification/pkg/notification"
@@ -28,6 +29,9 @@ func main() {
 	r := gin.New()
 	r.Use(middlewares.AuthMiddleware())
 	r.GET("/health", health())
+	r.GET("/metrics", metrics())
+	p := middlewares.NewPrometheus("notification", "http")
+	r.Use(p.HandleFunc())
 	r.GET("/", func (c *gin.Context) {
 		credentials, ok := c.Get("user")
 		if !ok {
@@ -66,5 +70,12 @@ func health() func (c *gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, "Healthy")
+	}
+}
+
+func metrics() func (c *gin.Context) {
+	h := promhttp.Handler()
+	return func (c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
 	}
 }

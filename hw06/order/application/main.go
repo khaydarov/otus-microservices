@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4"
 	"github.com/joho/godotenv"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/segmentio/kafka-go"
 	"hw06/order/controllers"
 	"hw06/order/internal/order"
@@ -35,11 +36,13 @@ func main() {
 	defer kafkaWriter.Close()
 
 	r := gin.New()
+	r.GET("/health", health())
+	r.GET("/metrics", metrics())
+	p := middlewares.NewPrometheus("order", "http")
+	r.Use(p.HandleFunc())
 	r.GET("/", func (c *gin.Context) {
 		c.JSON(200, "Hello to order service!")
 	})
-	r.GET("/health", health())
-
 	r.Use(middlewares.AuthMiddleware())
 	r.POST("/", controllers.CreateOrder(
 		order.NewPsqlOrderRepository(db),
@@ -79,5 +82,12 @@ func health() func (c *gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, "Healthy")
+	}
+}
+
+func metrics() func (c *gin.Context) {
+	h := promhttp.Handler()
+	return func (c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
 	}
 }
