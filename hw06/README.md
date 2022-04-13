@@ -80,5 +80,9 @@ bash .postman-test.sh
 
 - Common naming enhancements
 - Setup grafana/prometheus
-- Collect metrics
+  -- collect metrics from orders
+  -- collect metrics from notifications
+  -- setup exporters for postgres, ingress, kafka
+  -- setup grafana
+  -- setup k8s for all that
 - Setup HPA

@@ -27,7 +27,7 @@ func Login(userRepository user.Repository, sessionRepository session.Repository)
 		actualUser := userRepository.FindUserByLoginAndPassword(data.Login, data.Password)
 
 		if actualUser == nil {
-			c.JSON(http.StatusNotFound, gin.H{
+			c.JSON(http.StatusOK, gin.H{
 				"error": "User not found",
 			})
 

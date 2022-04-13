@@ -6,6 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4"
 	"github.com/joho/godotenv"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"hw06/user/infrastructure/metrics"
 	"hw06/user/infrastructure/session"
 	"hw06/user/infrastructure/user"
 	"hw06/user/ui/web"
@@ -27,13 +29,14 @@ func main() {
 	initDb()
 	defer postgresConnection.Close(context.Background())
 
+	p := metrics.NewPrometheus("users", "http", "/metrics")
 	r := gin.Default()
+	r.GET("/health", health())
+	r.Use(p.HandleFunc())
+	r.GET(p.MetricsPath, prometheus())
 	r.GET("/", func (c *gin.Context) {
 		c.JSON(200, "Hello to user service!")
 	})
-
-	r.GET("/health", health())
-
 	r.Use(gin.CustomRecovery(func (c *gin.Context, recovered interface{}) {
 		if err, ok := recovered.(string); ok {
 			c.JSON(http.StatusInternalServerError, gin.H{
@@ -80,5 +83,13 @@ func health() func (c *gin.Context) {
 		}
 
 		c.JSON(http.StatusInternalServerError, "Unhealthy")
+	}
+}
+
+func prometheus() func (c *gin.Context) {
+	h := promhttp.Handler()
+
+	return func (c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
 	}
 }

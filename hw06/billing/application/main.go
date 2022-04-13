@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4"
 	"github.com/joho/godotenv"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"hw06/billing/account"
 	"hw06/billing/middlewares"
 	"log"
@@ -22,10 +23,14 @@ func main() {
 	defer postgresConnection.Close(context.Background())
 
 	r := gin.Default()
+	r.GET("/health", health())
+	r.GET("/metrics", metrics())
+
+	p := middlewares.NewPrometheus("billing", "http")
+	r.Use(p.HandleFunc())
 	r.GET("/", func (c *gin.Context) {
 		c.JSON(200, "Hello to billing service!")
 	})
-	r.GET("/health", health())
 
 	// Register modules
 	r.Use(middlewares.AuthMiddleware())
@@ -62,5 +67,12 @@ func health() func (c *gin.Context) {
 		}
 
 		c.JSON(http.StatusInternalServerError, "Unhealthy")
+	}
+}
+
+func metrics() func (c *gin.Context) {
+	h := promhttp.Handler()
+	return func (c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
 	}
 }
