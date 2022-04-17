@@ -124,7 +124,15 @@
 
 
 22. DDD and modular monoliths (part 1)
+    * Coupling
+    * Cohesion
+    * Common principles
+
 23. DDD and modular monoliths (part 2)
+    * Decomposition rules
+    * Aggregates
+    * Strategic Classification
+
 24. Microservices decomposition. [Homework #8](https://github.com/khaydarov/otus-microservices/tree/main/hw08)
     * Decomposition patterns
     * Context Canvas
