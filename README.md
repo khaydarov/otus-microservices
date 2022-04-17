@@ -122,9 +122,14 @@
     * Chaos engineering
     * Stress testing    
 
+
 22. DDD and modular monoliths (part 1)
 23. DDD and modular monoliths (part 2)
 24. Microservices decomposition. [Homework #8](https://github.com/khaydarov/otus-microservices/tree/main/hw08)
+    * Decomposition patterns
+    * Context Canvas
+    
+
 25. From monolith to microservices
 26. Distributed systems overview
 27. Distributed transactions. [Homework #9](https://github.com/khaydarov/otus-microservices/tree/main/hw09)
