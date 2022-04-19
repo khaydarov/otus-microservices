@@ -57,14 +57,14 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              port: 80
+              port: {{ .Values.application.deployment.pod.port }}
               path: /health
             initialDelaySeconds: 2
             periodSeconds: 3
             timeoutSeconds: 1
           readinessProbe:
             httpGet:
-              port: 80
+              port: {{ .Values.application.deployment.pod.port }}
               path: /
             initialDelaySeconds: 2
             periodSeconds: 2
@@ -73,11 +73,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include ".helm.fullname" . }}
+  labels:
+  {{- include ".helm.labels" . | nindent 4 }}
 spec:
   selector:
     {{- include ".helm.selectorLabels" . | nindent 6 }}
   ports:
-    - protocol: TCP
+    - name: web
+      protocol: TCP
       port: {{ .Values.application.service.port }}
       targetPort: {{ .Values.application.deployment.pod.port }}
   type: {{ .Values.application.service.type }}

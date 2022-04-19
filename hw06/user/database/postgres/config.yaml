@@ -2,5 +2,12 @@ auth:
   username: postgres
   postgresPassword: postgres
   database: users
-service:
-  port: "5432"
+primary:
+  service:
+    type: LoadBalancer
+    ports:
+      postgresql: "5432"
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true

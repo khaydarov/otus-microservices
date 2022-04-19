@@ -76,11 +76,12 @@ Run Postman test scenario
 bash .postman-test.sh
 ```
 
-### TODO
 
-- Common naming enhancements
-- Setup grafana/prometheus
-  -- setup exporters for postgres, ingress, kafka
-  -- setup grafana
-  -- setup k8s for all that
-- Setup HPA
+### Monitoring
+
+Install Grafana
+```shell
+cd monitoring
+helm install prom prometheus-community/kube-prometheus-stack -f k8s-prometheus.yaml --atomic
+kubectl port-forward service/prom-grafana 9000:80 # expose grafana (pass: prom-operator)
+```

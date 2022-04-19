@@ -10,3 +10,8 @@ serviceAccount:
   create: true
 rbac:
   create: true
+metrics:
+  kafka:
+    enabled: true
+  serviceMonitor:
+    enabled: true
