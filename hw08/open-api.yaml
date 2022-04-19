@@ -1,0 +1,300 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: murod.haydarov@gmail.com
+  title: Домашнее задание №8
+  version: 0.1.0
+servers:
+  - url: http://arch.homework
+    description: Локальный сервер
+security:
+  - bearerAuth: []
+tags:
+  - name: users
+    description: Пользователи
+  - name: billing
+    description: Биллинг
+  - name: orders
+    description: Заказы
+  - name: notifications
+    description: Уведомления
+paths:
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Регистрация пользователя
+      description: Создает пользователя и аккаунт в сервисе биллинга
+      requestBody:
+        $ref: '#/components/requestBodies/User'
+      responses:
+        201:
+          description: Регистрация прошла успешно
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      password:
+                        type: string
+                        format: uuid
+        400:
+          description: Неправильный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: 'user with login exists'
+
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Аутентификация пользователя
+      description: Аутентифицирует пользователя, возвращает accessToken и refreshToken
+      requestBody:
+        $ref: '#/components/requestBodies/Login'
+      responses:
+        200:
+          description: Пользователь аутентифицирован
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      accessToken:
+                        type: string
+                      refreshToken:
+                        type: string
+                        format: uuid
+              example:
+                accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzIjoxNjQ3ODY3NDkwLCJmaXJzdE5hbWUiOiJDcnV6IiwiaWQiOiIzYzc2YjY0Ny1kMzZkLTRkNWItYTZjZS1hN2NmMjRlMDk1MmUiLCJsYXN0TmFtZSI6IkdlcmxhY2gifQ.r7xZCr-E0AL0lP4Ms4CVGAzXouYyOVa5vhBqkzlwUUM'
+                refreshToken: 'f2aabdea-3f1b-4cea-baac-62673065d05c'
+        400:
+          description: Неправильный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: 'invalid login/password or user does not exist'
+        404:
+          description: Такого пользователя нет
+
+  /billing/depositAccount:
+    post:
+      tags:
+        - billing
+      summary: 'Пополнение баланса'
+      description: 'Пополняет баланс аккаунта в биллинге'
+      requestBody:
+        $ref: '#/components/requestBodies/Deposit'
+      responses:
+        200:
+          description: 'Баланс пополнен'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      balance:
+                        type: integer
+                      id:
+                        type: string
+                        format: uuid
+        400:
+          description: 'Ошибка запроса'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: 'Не корректные данные'
+
+  /billing/myAccount:
+    get:
+      tags:
+        - billing
+      summary: 'Просмотр состояния счета'
+      description: 'Показывает баланс и идентификатор счета'
+      responses:
+        200:
+          description: 'Счет найден'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  balance:
+                    type: integer
+
+        401:
+          description: 'Пользователь не авторизован'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: 'Не авторизован'
+
+  /orders:
+    put:
+      tags:
+        - orders
+      summary: 'Создание заказа'
+      description: 'Создает заказ и списывает деньги'
+      requestBody:
+        $ref: '#/components/schemas/Order'
+      responses:
+        200:
+          description: 'Возвращается идентификатор заказа'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+        400:
+          description: 'Ошибка запроса'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: 'Недостаточно денег'
+
+  /notifications:
+    get:
+      tags:
+        - notifications
+      summary: 'Список уведомлений'
+      description: 'Возвращает список уведомлений'
+      responses:
+        200:
+          description: 'Cписок уведомлений'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        login:
+          type: string
+        password:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        lastName:
+          type: string
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        amount:
+          type: integer
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        text:
+          type: string
+  requestBodies:
+    User:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+          examples:
+            sample-user:
+              summary: Обычный пользователь
+              value:
+                login: johndoe589
+                firstName: John
+                lastName: Doe
+      description: User object that needs to be created
+      required: true
+    Login:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              login:
+                type: string
+              password:
+                type: string
+                format: uuid
+          example:
+            login: 'conor'
+            password: 'your-uuid-password'
+    Deposit:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              amount:
+                type: integer
+          example:
+            amount: 1000
+    Order:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Order'
