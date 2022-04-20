@@ -34,6 +34,14 @@
 - Сервис «Заказов»
 - Сервис «Уведомлений»
 
+## Спецификация OpenAPI
+
+[OpenAPI.yaml](https://github.com/khaydarov/otus-microservices/blob/main/hw08/open-api.yaml)
+
+## Схема взаимодействия
+
+![](structure.png)
+
 ---
 ### Сервис «Пользователи»
 
