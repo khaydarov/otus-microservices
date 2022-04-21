@@ -139,6 +139,11 @@
     
 
 25. From monolith to microservices
+    * Distributed Tracing
+    * Tracers: Zipkin, Jaeger; APM: NewRelic, DataDog
+    * Strangler pattern
+
+
 26. Distributed systems overview
 27. Distributed transactions. [Homework #9](https://github.com/khaydarov/otus-microservices/tree/main/hw09)
 28. Caching patterns
