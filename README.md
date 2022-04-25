@@ -128,10 +128,12 @@
     * Cohesion
     * Common principles
 
+
 23. DDD and modular monoliths (part 2)
     * Decomposition rules
     * Aggregates
     * Strategic Classification
+
 
 24. Microservices decomposition. [Homework #8](https://github.com/khaydarov/otus-microservices/tree/main/hw08)
     * Decomposition patterns
@@ -140,11 +142,16 @@
 
 25. From monolith to microservices
     * Distributed Tracing
+    * Opentracing/OpenTelemetry
     * Tracers: Zipkin, Jaeger; APM: NewRelic, DataDog
     * Strangler pattern
 
 
 26. Distributed systems overview
+    * CAP & PACELC theorems
+    * BASE & ACID
+
+
 27. Distributed transactions. [Homework #9](https://github.com/khaydarov/otus-microservices/tree/main/hw09)
 28. Caching patterns
 29. Sharding
