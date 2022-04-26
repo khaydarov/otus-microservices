@@ -150,6 +150,7 @@
 26. Distributed systems overview
     * CAP & PACELC theorems
     * BASE & ACID
+    * Actor Model
 
 
 27. Distributed transactions. [Homework #9](https://github.com/khaydarov/otus-microservices/tree/main/hw09)
