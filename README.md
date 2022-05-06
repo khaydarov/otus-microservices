@@ -154,7 +154,16 @@
 
 
 27. Distributed transactions. [Homework #9](https://github.com/khaydarov/otus-microservices/tree/main/hw09)
+    * Consistency patterns
+    * Two-phase commit, Saga pattern
+    * Transactional messaging
+    * Deadlock
+
+
 28. Caching patterns
+    * LRU, MRU, PLRU, LFU
+    * LoadBalancing
+
 29. Sharding
 30. CP systems
 31. AP systems
