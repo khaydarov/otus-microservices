@@ -1,4 +1,4 @@
-## otus-microservices
+## Course plan
 
 1. Pros and cons of microservice architecture
     * Architecture and architect
