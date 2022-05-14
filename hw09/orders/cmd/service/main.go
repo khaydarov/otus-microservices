@@ -17,11 +17,11 @@ func init() {
 }
 
 func main() {
-	r := gin.New()
-	//r.GET("/", api.RootHandler())
-	r.GET("/", api.CreateOrderHandler())
+	server := gin.Default()
+	server.GET("/", api.RootHandler())
+	server.POST("/", api.CreateOrderHandler())
 
-	err := r.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
+	err := server.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 	if err != nil {
 		log.Fatalf("Server is not started: %s", err)
 	}

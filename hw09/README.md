@@ -3,7 +3,9 @@
 * logic implementation
 * metrics
 * database
-* best practices  
+* best practices
+* microservice canvas
+* jaeger/tracing  
 * installation
     * helm charts
     * docs

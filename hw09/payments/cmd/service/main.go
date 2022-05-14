@@ -12,17 +12,17 @@ import (
 func init() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatalln("Error loading .env file")
 	}
 }
 
 func main() {
-	r := gin.New()
-	r.GET("/", api.RootHandler())
-	r.POST("/", api.WithdrawHandler())
+	server := gin.Default()
+	server.POST("/makePayment", api.MakePaymentHandler())
+	server.POST("/cancelPayment", api.CancelPaymentHandler())
 
-	err := r.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
+	err := server.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 	if err != nil {
-		log.Fatalf("Server is not started: %s", err)
+		log.Fatalf("server start failed: %s", err)
 	}
 }
