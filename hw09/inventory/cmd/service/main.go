@@ -5,6 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"hw09/inventory/internal/api"
+	"hw09/inventory/internal/db"
+	"hw09/inventory/internal/goods"
 	"log"
 	"os"
 )
@@ -17,9 +19,12 @@ func init() {
 }
 
 func main() {
+	psql := db.Connect(os.Getenv("DATABASE_URI"))
+	goodsRepository := goods.NewRepository(psql)
+
 	server := gin.Default()
-	server.POST("/reserveGoods", api.ReserveGoodsHandler())
-	server.POST("/cancelGoodsReservation", api.CancelGoodsReservationHandler())
+	server.POST("/reserveGoods", api.ReserveGoodsHandler(goodsRepository))
+	server.POST("/cancelGoodsReservation", api.CancelGoodsReservationHandler(goodsRepository))
 
 	err := server.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 	if err != nil {

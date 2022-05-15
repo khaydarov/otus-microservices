@@ -5,6 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"hw09/orders/internal/api"
+	"hw09/orders/internal/db"
+	"hw09/orders/internal/order"
 	"log"
 	"os"
 )
@@ -17,9 +19,12 @@ func init() {
 }
 
 func main() {
+	psql := db.Connect(os.Getenv("DATABASE_URI"))
+	orderRepository := order.NewRepository(psql)
+
 	server := gin.Default()
 	server.GET("/", api.RootHandler())
-	server.POST("/", api.CreateOrderHandler())
+	server.POST("/", api.CreateOrderHandler(orderRepository))
 
 	err := server.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 	if err != nil {

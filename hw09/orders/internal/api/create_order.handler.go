@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
+	"hw09/orders/internal/order"
 	"hw09/orders/internal/saga"
 	"hw09/orders/internal/service/inventory"
 	"hw09/orders/internal/service/payments"
@@ -12,7 +12,7 @@ import (
 )
 
 // CreateOrderHandler handles request to create order
-func CreateOrderHandler() func (c *gin.Context) {
+func CreateOrderHandler(repository order.Repository) func (c *gin.Context) {
 	type Good struct {
 		ID 		int `json:"id"`
 		Price 	int `json:"price"`
@@ -41,7 +41,19 @@ func CreateOrderHandler() func (c *gin.Context) {
 			goodIds = append(goodIds, good.ID)
 		}
 
-		orderId := uuid.NewString()
+		o := order.CreateOrder()
+		err := repository.Store(o)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"success": false,
+				"message": err.Error(),
+				"data": gin.H{},
+			})
+
+			return
+		}
+
 		log.Println("order created!")
 
 		s := saga.Saga{}
@@ -50,7 +62,7 @@ func CreateOrderHandler() func (c *gin.Context) {
 			Name: "make payment",
 			Func: func() error {
 				log.Println("payments: start payment")
-				err := payments.MakePayment(orderId, amount)
+				err := payments.MakePayment(o.ID.GetValue(), amount)
 
 				if err != nil {
 					return err
@@ -62,7 +74,7 @@ func CreateOrderHandler() func (c *gin.Context) {
 			Compensation: func() error {
 				log.Println("payments: cancel payment")
 
-				err := payments.CancelPayment(orderId)
+				err := payments.CancelPayment(o.ID.GetValue())
 				if err != nil {
 					panic(err)
 				}
@@ -75,7 +87,7 @@ func CreateOrderHandler() func (c *gin.Context) {
 			Name: "reserve goods",
 			Func: func() error {
 				log.Println("inventory: start goods reservation")
-				_, err := inventory.ReserveGoods(orderId, goodIds)
+				_, err := inventory.ReserveGoods(o.ID.GetValue(), goodIds)
 
 				if err != nil {
 					return err
@@ -87,7 +99,7 @@ func CreateOrderHandler() func (c *gin.Context) {
 			Compensation: func() error {
 				log.Println("inventory: cancel goods reservation")
 
-				err := inventory.CancelGoodsReservation(orderId)
+				err := inventory.CancelGoodsReservation(o.ID.GetValue())
 				if err != nil {
 					return err
 				}
@@ -100,7 +112,7 @@ func CreateOrderHandler() func (c *gin.Context) {
 			Name: "reserve courier",
 			Func: func() error {
 				log.Println("shipment: start courier reservation")
-				err := shipment.ReserveCourier(orderId)
+				err := shipment.ReserveCourier(o.ID.GetValue())
 
 				if err != nil {
 					return err
@@ -112,7 +124,7 @@ func CreateOrderHandler() func (c *gin.Context) {
 			Compensation: func() error {
 				log.Println("shipment: cancel courier reservation")
 
-				err := shipment.CancelCourierReservation(orderId)
+				err := shipment.CancelCourierReservation(o.ID.GetValue())
 				if err != nil {
 					return err
 				}
@@ -122,7 +134,7 @@ func CreateOrderHandler() func (c *gin.Context) {
 		})
 
 		coordinator := saga.NewCoordinator(s)
-		err := coordinator.Commit()
+		err = coordinator.Commit()
 
 		if err != nil {
 			log.Println("order cancelled")
@@ -140,7 +152,7 @@ func CreateOrderHandler() func (c *gin.Context) {
 			"success": true,
 			"message": "",
 			"data": gin.H{
-				"order_id": orderId,
+				"order_id": o.ID.GetValue(),
 			},
 		})
 	}

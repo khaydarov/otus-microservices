@@ -1,11 +1,11 @@
 ## TODO
 
 * logic implementation
-* metrics
-* database
-* best practices
+  * database
+  * metrics
+  * best practices
 * microservice canvas
-* jaeger/tracing  
+* jaeger/tracing
 * installation
     * helm charts
     * docs

@@ -2,13 +2,14 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"hw09/payments/internal/service"
 	"net/http"
 )
 
 const limit = 1000
 
 // MakePaymentHandler handles request to make payment
-func MakePaymentHandler() func (c *gin.Context) {
+func MakePaymentHandler(service service.PaymentService) func (c *gin.Context) {
 	// Request body structure
 	type Body struct {
 		OrderID string 	`json:"order_id"`
@@ -34,6 +35,17 @@ func MakePaymentHandler() func (c *gin.Context) {
 				"data": gin.H{},
 			})
 		} else {
+			err := service.StorePayment(body.OrderID, body.Amount)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"success" : false,
+					"message": err.Error(),
+					"data": gin.H{},
+				})
+
+				return
+			}
+
 			c.JSON(http.StatusOK, gin.H{
 				"success" : true,
 				"message": "",
