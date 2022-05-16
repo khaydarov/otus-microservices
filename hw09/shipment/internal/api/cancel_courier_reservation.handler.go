@@ -25,7 +25,7 @@ func CancelCourierReservationHandler(repository courier.Repository) func (c *gin
 			return
 		}
 
-		err := repository.CancelReservation(courier.Courier{})
+		err := repository.CancelReservation(body.OrderID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"data": gin.H{

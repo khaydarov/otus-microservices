@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS t_orders
+(
+   id uuid PRIMARY KEY
+);

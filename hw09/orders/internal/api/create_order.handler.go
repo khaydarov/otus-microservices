@@ -139,6 +139,8 @@ func CreateOrderHandler(repository order.Repository) func (c *gin.Context) {
 		if err != nil {
 			log.Println("order cancelled")
 
+			repository.Delete(o)
+
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"success": false,
 				"message": err.Error(),

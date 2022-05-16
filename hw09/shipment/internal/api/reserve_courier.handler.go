@@ -25,7 +25,18 @@ func ReserveCourierHandler(repository courier.Repository) func (c *gin.Context) 
 			return
 		}
 
-		err := repository.Reserve(courier.Courier{})
+		freeCourier, err := repository.GetFreeCourier()
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"message": err.Error(),
+				"data": gin.H{},
+			})
+
+			return
+		}
+
+		err = repository.Reserve(freeCourier, body.OrderID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"data": gin.H{

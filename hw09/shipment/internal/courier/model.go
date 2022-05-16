@@ -1,5 +1,6 @@
 package courier
 
 type Courier struct {
-	ID string
+	ID 		int
+	Name 	string
 }
