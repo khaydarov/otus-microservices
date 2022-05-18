@@ -164,7 +164,13 @@
     * LRU, MRU, PLRU, LFU
     * LoadBalancing
 
+
 29. Sharding
+    * Vertical, Horizontal partitioning
+    * Vertical, Horizontal sharding
+    * Consistent hashing
+
+
 30. CP systems
 31. AP systems
 32. The role of the architect
