@@ -172,6 +172,9 @@
 
 
 30. CP systems
+    * Consistency algorithms: Paxos, Raft, Zab
+    
+
 31. AP systems
 32. The role of the architect
 33. Architecture cost. Artifacts of architecture
