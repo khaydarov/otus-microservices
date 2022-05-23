@@ -176,5 +176,9 @@
     
 
 31. AP systems
+    * Gossip: Scuttlebut
+    * Replication without master (dynamoDB like databases)
+    
+
 32. The role of the architect
 33. Architecture cost. Artifacts of architecture
