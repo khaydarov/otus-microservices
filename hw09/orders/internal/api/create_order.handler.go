@@ -90,7 +90,7 @@ func CreateOrderHandler(repository order.Repository) func (c *gin.Context) {
 
 				err := payments.CancelPayment(o.ID.GetValue())
 				if err != nil {
-					panic(err)
+					return err
 				}
 
 				span.AddEvent("payments: canceled")

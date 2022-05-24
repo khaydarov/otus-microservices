@@ -56,7 +56,7 @@ func (c *Coordinator) abort(from int) {
 		err := c.abortStep(i)
 
 		if err != nil {
-			panic(err)
+			continue
 		}
 	}
 }

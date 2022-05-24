@@ -1,0 +1,23 @@
+image:
+  repository: khaydarov95/otus-hw09-order-service
+  pullPolicy: Never
+  tag: v1
+deployment:
+  replicaCount: 1
+  pod:
+    port: 80
+service:
+  type: LoadBalancer
+  port: 8080
+postgresql:
+  host: db-postgresql.default.svc.cluster.local
+  username: postgres
+  password: postgres
+  database: orders
+  port: "5432"
+external:
+  payments: http://payments-service.otus-hw09.svc.cluster.local:8081
+  inventory: http://inventory-service.otus-hw09.svc.cluster.local:8082
+  shipment: http://shipment-service.otus-hw09.svc.cluster.local:8083
+jaeger:
+  dns: http://simplest-collector-headless.observability.svc.cluster.local:14268/api/traces
