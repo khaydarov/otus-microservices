@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"hw09/payments/internal/service"
+	"hw09/payments/internal/tracer"
 	"net/http"
 )
 
@@ -17,6 +18,9 @@ func MakePaymentHandler(service service.PaymentService) func (c *gin.Context) {
 	}
 
 	return func (c *gin.Context) {
+		_, span := tracer.NewSpan(c.Request.Context(), "POST /makePayment")
+		defer span.End()
+
 		body := Body{}
 		if err := c.BindJSON(&body); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{

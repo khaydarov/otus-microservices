@@ -3,6 +3,7 @@ package order
 import (
 	"context"
 	"github.com/jackc/pgx/v4"
+	"hw09/orders/internal/tracer"
 )
 
 type Repository struct {
@@ -15,9 +16,12 @@ func NewRepository(db *pgx.Conn) Repository {
 	}
 }
 
-func (r *Repository) Store(order Order) error {
+func (r *Repository) Store(ctx context.Context, order Order) error {
+	ctx, span := tracer.NewSpan(ctx, "INSERT INTO t_orders (id) VALUES ($1)")
+	defer span.End()
+
 	sqlStmt := `INSERT INTO t_orders (id) VALUES ($1)`
-	_, err := r.db.Exec(context.Background(), sqlStmt, order.ID.GetValue())
+	_, err := r.db.Exec(ctx, sqlStmt, order.ID.GetValue())
 
 	if err != nil {
 		return err

@@ -2,6 +2,7 @@ package payments
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -10,7 +11,7 @@ import (
 )
 
 // MakePayment sends request to payment service to make payment
-func MakePayment(orderId string, amount int) error {
+func MakePayment(ctx context.Context, orderId string, amount int) error {
 	endpoint := fmt.Sprintf("%s/makePayment", os.Getenv("PAYMENTS_HOST"))
 	data := map[string]interface{}{
 		"order_id": orderId,
@@ -19,7 +20,7 @@ func MakePayment(orderId string, amount int) error {
 
 	body, _ := json.Marshal(data)
 
-	request, _ := http.NewRequest("POST", endpoint, bytes.NewBuffer(body))
+	request, _ := http.NewRequest( "POST", endpoint, bytes.NewBuffer(body))
 	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
 
 	client := &http.Client{}

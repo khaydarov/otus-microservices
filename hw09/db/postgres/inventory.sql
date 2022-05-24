@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS t_goods_reservations
     order_id uuid
 );
 
-INSERT INTO t_goods (name, price) VALUES ('good 1', 100)
-INSERT INTO t_goods (name, price) VALUES ('good 2', 200)
-INSERT INTO t_goods (name, price) VALUES ('good 3', 300)
-INSERT INTO t_goods (name, price) VALUES ('good 4', 400)
+INSERT INTO t_goods (name, price) VALUES ('good 1', 100);
+INSERT INTO t_goods (name, price) VALUES ('good 2', 200);
+INSERT INTO t_goods (name, price) VALUES ('good 3', 300);
+INSERT INTO t_goods (name, price) VALUES ('good 4', 400);
