@@ -181,4 +181,7 @@
     
 
 32. The role of the architect
+    * Evolutionary Architecture and Emergent Design     
+
+
 33. Architecture cost. Artifacts of architecture
