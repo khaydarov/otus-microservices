@@ -1,0 +1,8 @@
+auth:
+  username: postgres
+  postgresPassword: postgres
+primary:
+  service:
+    type: LoadBalancer
+    ports:
+      postgresql: "5432"

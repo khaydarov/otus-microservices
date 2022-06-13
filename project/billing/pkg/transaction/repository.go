@@ -1,4 +1,4 @@
-package site
+package transaction
 
 import "github.com/jackc/pgx/v4"
 
@@ -12,8 +12,6 @@ type Repository struct {
 	db *pgx.Conn
 }
 
-func (r *Repository) Store(site Site) error {
+func (l *Repository) Commit(transaction Transaction) error {
 	return nil
 }
-
-//func (r *Repository) FindByCode()

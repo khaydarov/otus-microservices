@@ -1,12 +1,17 @@
 package api
 
 import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"os"
 	"users/pkg/user"
 )
 
-func SignUpHandler() func(c *gin.Context) {
+func SignUpHandler(userRepo user.Repository) func(c *gin.Context) {
 	type Body struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -26,10 +31,21 @@ func SignUpHandler() func(c *gin.Context) {
 		}
 
 		u := user.NewUser(body.Email, body.Password, body.Type)
-		repo := user.NewRepository()
-		err := repo.Save(u)
+		err := userRepo.Save(u)
 
 		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"success": false,
+				"message": err.Error(),
+				"data":    gin.H{},
+			})
+
+			return
+		}
+
+		err = createAccount(u.ID)
+		if err != nil {
+			_ = userRepo.Delete(u)
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"success": false,
 				"message": err.Error(),
@@ -46,4 +62,31 @@ func SignUpHandler() func(c *gin.Context) {
 			},
 		})
 	}
+}
+
+func createAccount(userID user.ID) error {
+	endpoint := fmt.Sprintf("%s/internal/createAccount", os.Getenv("BILLING_HOST"))
+	data := map[string]interface{}{
+		"user_id": userID.GetValue(),
+	}
+
+	body, _ := json.Marshal(data)
+
+	request, _ := http.NewRequest("POST", endpoint, bytes.NewBuffer(body))
+	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+
+	if err != nil {
+		return err
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusOK {
+		return errors.New("internal service error")
+	}
+
+	return nil
 }

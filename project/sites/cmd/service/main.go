@@ -7,6 +7,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"os"
 	"sites/api"
+	"sites/internal/db"
+	"sites/pkg/site"
 )
 
 func init() {
@@ -26,9 +28,12 @@ func main() {
 	})
 	log.SetLevel(log.TraceLevel)
 
+	psql := db.Connect(os.Getenv("DATABASE_URI"))
+	siteRepo := site.NewRepository(psql)
+
 	server := gin.New()
 	server.GET("/", api.RootHandler())
-	//server.POST("/sites", api.PostAdvertHandler())
+	server.POST("/sites", api.PostSitesHandler(siteRepo))
 
 	err := server.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 	if err != nil {

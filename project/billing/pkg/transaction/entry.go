@@ -7,12 +7,12 @@ const (
 	EntryCredit = 2
 )
 
-func NewEntry(entryType int, transaction Transaction, account account.Account, amount int) Entry {
+func NewEntry(entryType int, transactionID ID, accountID account.ID, amount int) Entry {
 	return Entry{
 		NewID(),
 		NewEntryType(entryType),
-		transaction.ID,
-		account.ID,
+		transactionID,
+		accountID,
 		amount,
 	}
 }

@@ -8,7 +8,7 @@ import (
 func RootHandler() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "Hello from sites-service",
+			"message": "Hello from billing-service",
 		})
 	}
 }

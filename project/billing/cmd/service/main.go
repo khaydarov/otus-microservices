@@ -1,6 +1,10 @@
 package main
 
 import (
+	"billing/api"
+	"billing/internal/db"
+	"billing/pkg/account"
+	"billing/pkg/transaction"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -25,10 +29,14 @@ func main() {
 	})
 	log.SetLevel(log.TraceLevel)
 
+	psql := db.Connect(os.Getenv("DATABASE_URI"))
+	accountRepo := account.NewRepository(psql)
+	ledger := transaction.NewLedger(psql)
+
 	server := gin.New()
-	//server.GET("/", api.RootHandler())
-	//server.POST("/signup", api.SignUpHandler())
-	//server.POST("/login", api.LoginHandler())
+	server.GET("/", api.RootHandler())
+	server.POST("/internal/createAccount", api.CreateAccountHandler(accountRepo))
+	server.POST("/internal/makePayment", api.MakePaymentHandler(accountRepo, ledger))
 
 	err := server.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 	if err != nil {

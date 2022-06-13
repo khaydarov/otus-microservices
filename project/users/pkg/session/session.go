@@ -13,7 +13,7 @@ type Token struct {
 }
 
 type Session struct {
-	ID        int
+	ID        string
 	UserID    user.ID
 	Token     Token
 	UserAgent string
@@ -32,6 +32,7 @@ func NewToken() Token {
 // CreateSession returns new session
 func CreateSession(userID user.ID, userAgent string, ip string) Session {
 	return Session{
+		ID:        uuid.NewString(),
 		UserID:    userID,
 		Token:     NewToken(),
 		UserAgent: userAgent,

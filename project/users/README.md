@@ -23,5 +23,7 @@
 ## TODO
 
 - helm
-- persistence
+- implement:
+  - validation
+  - refresh token endpoint
 - metrics
