@@ -1,4 +1,4 @@
-package transaction
+package legder
 
 import "github.com/google/uuid"
 

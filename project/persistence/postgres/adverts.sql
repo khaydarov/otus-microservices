@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS t_couriers
+CREATE TABLE IF NOT EXISTS t_adverts
 (
    id serial PRIMARY KEY,
    name text NOT NULL

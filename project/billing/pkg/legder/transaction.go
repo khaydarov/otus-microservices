@@ -1,4 +1,4 @@
-package transaction
+package legder
 
 import "billing/pkg/account"
 
@@ -27,4 +27,8 @@ func (t *Transaction) AddEntry(account account.Account, entryType int, amount in
 
 func (t *Transaction) Commit() {
 	t.committed = true
+}
+
+func (t *Transaction) GetID() ID {
+	return t.id
 }

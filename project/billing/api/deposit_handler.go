@@ -3,30 +3,38 @@ package api
 import (
 	"billing/pkg/account"
 	"billing/pkg/legder"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"os"
 )
 
-func MakePaymentHandler(accountRepo account.Repository, ledger legder.Ledger) func(c *gin.Context) {
+func DepositHandler(accountRepo account.Repository, ledger legder.Ledger) func(c *gin.Context) {
 	type Body struct {
-		Amount int    `json:"amount"`
-		UserID string `json:"userID"`
+		Amount int `json:"amount"`
 	}
 
 	return func(c *gin.Context) {
-		var body Body
-		if err := c.ShouldBindJSON(&body); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
+		userID, ok := c.Get("UserID")
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{
 				"success": false,
-				"message": fmt.Sprintf("bad request: %s", err.Error()),
+				"message": "invalid token",
 			})
 
 			return
 		}
 
-		userAccount, err := accountRepo.GetByUserID(body.UserID)
+		var body Body
+		if err := c.ShouldBindJSON(&body); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"success": false,
+				"message": "bad request",
+			})
+
+			return
+		}
+
+		userAccount, err := accountRepo.GetByUserID(userID.(string))
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"success": false,
@@ -36,7 +44,7 @@ func MakePaymentHandler(accountRepo account.Repository, ledger legder.Ledger) fu
 			return
 		}
 
-		revenue, err := accountRepo.GetByID(account.WithValue(os.Getenv("REVENUE_ID")))
+		cashbook, err := accountRepo.GetByID(account.WithValue(os.Getenv("CASHBOOK_ID")))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"success": false,
@@ -46,9 +54,9 @@ func MakePaymentHandler(accountRepo account.Repository, ledger legder.Ledger) fu
 			return
 		}
 
-		transaction := legder.NewTransaction("Payment for advert")
-		transaction.AddEntry(userAccount, 1, body.Amount)
-		transaction.AddEntry(revenue, 2, body.Amount)
+		transaction := ledger.NewTransaction("deposit")
+		transaction.AddEntry(cashbook, 1, body.Amount)
+		transaction.AddEntry(userAccount, 2, body.Amount)
 
 		err = ledger.Commit(transaction)
 		if err != nil {

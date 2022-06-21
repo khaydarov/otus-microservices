@@ -30,3 +30,40 @@ func (r *Repository) Store(account Account) error {
 
 	return nil
 }
+
+func (r *Repository) GetByUserID(userID string) (Account, error) {
+	var (
+		accountID string
+		typeValue int
+	)
+
+	stmt := `SELECT t2.id, t2.type FROM t_user_accounts t1 JOIN t_accounts t2 ON t1.account_id = t2.id WHERE t1.user_id = $1`
+	err := r.db.QueryRow(context.Background(), stmt, userID).Scan(&accountID, &typeValue)
+
+	if err != nil {
+		return Account{}, err
+	}
+
+	return Account{
+		WithValue(accountID),
+		userID,
+		typeValue,
+	}, nil
+}
+
+func (r *Repository) GetByID(id ID) (Account, error) {
+	var typeValue int
+
+	stmt := `SELECT type FROM t_accounts WHERE id = $1`
+	err := r.db.QueryRow(context.Background(), stmt, id.GetValue()).Scan(&typeValue)
+
+	if err != nil {
+		return Account{}, err
+	}
+
+	return Account{
+		id,
+		"",
+		typeValue,
+	}, nil
+}

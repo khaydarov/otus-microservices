@@ -2,6 +2,8 @@ package main
 
 import (
 	"adverts/api"
+	"adverts/internal/db"
+	"adverts/pkg/advert"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -26,9 +28,12 @@ func main() {
 	})
 	log.SetLevel(log.TraceLevel)
 
+	psql := db.Connect(os.Getenv("DATABASE_URI"))
+	advertRepo := advert.NewRepository(psql)
+
 	server := gin.New()
 	server.GET("/", api.RootHandler())
-	server.Any("/adverts", api.PostAdvertHandler())
+	server.POST("/adverts", api.PostAdvertHandler(advertRepo))
 	server.GET("/adverts/relevant", api.GetRelevantAdvertHandler())
 
 	err := server.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))

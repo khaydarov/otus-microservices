@@ -1,4 +1,4 @@
-package transaction
+package legder
 
 func NewEntryType(v int) EntryType {
 	return EntryType{

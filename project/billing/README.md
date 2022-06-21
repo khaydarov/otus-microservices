@@ -1,4 +1,4 @@
-### Сервис «Name»
+### Сервис «Биллинг»
 
 **Описание**
 
@@ -10,7 +10,9 @@
 
 **Команды**
 
-- NOe
+- `POST /createAccount` — создает счёт для пользователя
+- `POST /сhargeAccount` — оплата рекламы
+- `POST /payouts` — начисления клиентам денег за показы
 
 **События**
 
@@ -22,7 +24,5 @@
 
 ## TODO
 
-- implement methods
-- persistence
 - helm
 - metrics

@@ -1,10 +1,15 @@
 package advert
 
-func NewRepository() Repository {
-	return Repository{}
+import "github.com/jackc/pgx/v4"
+
+func NewRepository(db *pgx.Conn) Repository {
+	return Repository{
+		db,
+	}
 }
 
 type Repository struct {
+	db *pgx.Conn
 }
 
 func (r *Repository) FindByID(id ID) (Advert, error) {

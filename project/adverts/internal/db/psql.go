@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-// Connect connects to postgresSQL and returns connection
+// Connect connects to postgreSQL and returns connection
 func Connect(dsn string) *pgx.Conn {
 	var err error
 	ctx := context.Background()
