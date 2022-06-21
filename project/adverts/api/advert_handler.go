@@ -20,6 +20,16 @@ func PostAdvertHandler(advertRepo advert.Repository) func(c *gin.Context) {
 	}
 
 	return func(c *gin.Context) {
+		userID, ok := c.Get("UserID")
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"success": false,
+				"message": "invalid token",
+			})
+
+			return
+		}
+
 		var body Body
 		if err := c.ShouldBindJSON(&body); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -35,6 +45,7 @@ func PostAdvertHandler(advertRepo advert.Repository) func(c *gin.Context) {
 		devices := strings.Split(body.Devices, ",")
 
 		newAdvert := advert.NewAdvert(
+			userID.(string),
 			body.Title,
 			body.Description,
 			body.Link,
@@ -62,6 +73,27 @@ func PostAdvertHandler(advertRepo advert.Repository) func(c *gin.Context) {
 			"data": gin.H{
 				"id": newAdvert.ID.GetValue(),
 			},
+		})
+	}
+}
+
+func GetAdvertsHandler(advertRepo advert.Repository) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		userID, ok := c.Get("UserID")
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"success": false,
+				"message": "invalid token",
+			})
+
+			return
+		}
+
+		adverts := advertRepo.FindByUserID(userID.(string))
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"message": "",
+			"data":    adverts,
 		})
 	}
 }

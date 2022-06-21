@@ -1,8 +1,9 @@
 package advert
 
-func NewAdvert(title, description, link, image string, devices, dates []string, hits, cost int) Advert {
+func NewAdvert(userID string, title, description, link, image string, devices, dates []string, hits, cost int) Advert {
 	return Advert{
 		NewID(),
+		userID,
 		title,
 		description,
 		link,
@@ -13,6 +14,7 @@ func NewAdvert(title, description, link, image string, devices, dates []string, 
 
 type Advert struct {
 	ID          ID
+	UserID      string
 	Title       string
 	Description string
 	Link        string

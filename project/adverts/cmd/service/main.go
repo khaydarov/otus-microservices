@@ -39,6 +39,7 @@ func main() {
 
 	publicApi := server.Group("/").Use(middleware.Auth())
 	{
+		publicApi.GET("/adverts", api.GetAdvertsHandler(advertRepo))
 		publicApi.POST("/adverts", api.PostAdvertHandler(advertRepo))
 	}
 

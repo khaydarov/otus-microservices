@@ -8,6 +8,7 @@ import (
 	"os"
 	"sites/api"
 	"sites/internal/db"
+	"sites/internal/middleware"
 	"sites/pkg/site"
 )
 
@@ -33,7 +34,12 @@ func main() {
 
 	server := gin.New()
 	server.GET("/", api.RootHandler())
-	server.POST("/sites", api.PostSitesHandler(siteRepo))
+
+	publicApi := server.Group("/").Use(middleware.Auth())
+	{
+		publicApi.GET("/sites", api.GetSitesHandler(siteRepo))
+		publicApi.POST("/sites", api.PostSitesHandler(siteRepo))
+	}
 
 	err := server.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 	if err != nil {

@@ -1,8 +1,9 @@
 package site
 
-func NewSite(title string, domains []string) Site {
+func NewSite(userID, title string, domains []string) Site {
 	return Site{
 		NewID(),
+		userID,
 		title,
 		NewCode(),
 		domains,
@@ -11,7 +12,8 @@ func NewSite(title string, domains []string) Site {
 
 type Site struct {
 	ID      ID
-	title   string
-	code    Code
-	domains []string
+	UserID  string
+	Title   string
+	Code    Code
+	Domains []string
 }
