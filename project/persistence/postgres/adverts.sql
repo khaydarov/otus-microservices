@@ -1,17 +1,17 @@
 CREATE TABLE IF NOT EXISTS t_adverts
 (
-   id serial PRIMARY KEY,
-   name text NOT NULL
+   id           uuid PRIMARY KEY,
+   title        text NOT NULL,
+   description  text NOT NULL,
+   link         text NOT NULL,
+   image        text NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS t_courier_reservations
+CREATE TABLE IF NOT EXISTS t_adverts_targeting
 (
-    courier_id int NOT NULL,
-    order_id uuid,
-    destination text
+    advert_id   uuid NOT NULL,
+    dates       jsonb,
+    devices     jsonb,
+    hits        int,
+    cost        int
 );
-
-INSERT INTO t_couriers (name) VALUES ('courier 1');
-INSERT INTO t_couriers (name) VALUES ('courier 2');
-INSERT INTO t_couriers (name) VALUES ('courier 3');
-INSERT INTO t_couriers (name) VALUES ('courier 4');

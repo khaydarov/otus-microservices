@@ -1,13 +1,13 @@
 package advert
 
-func NewAdvert(title, description, link, image string, devices, dates []string) Advert {
+func NewAdvert(title, description, link, image string, devices, dates []string, hits, cost int) Advert {
 	return Advert{
 		NewID(),
 		title,
 		description,
 		link,
 		image,
-		NewTargeting(devices, dates),
+		NewTargeting(devices, dates, hits, cost),
 	}
 }
 

@@ -36,8 +36,12 @@ func main() {
 
 	server := gin.New()
 	server.GET("/", api.RootHandler())
-	server.POST("/signup", api.SignUpHandler(userRepo))
-	server.POST("/login", api.LoginHandler(userRepo, sessionRepo))
+
+	publicApi := server.Group("/")
+	{
+		publicApi.POST("/signup", api.SignUpHandler(userRepo))
+		publicApi.POST("/login", api.LoginHandler(userRepo, sessionRepo))
+	}
 
 	err := server.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 	if err != nil {

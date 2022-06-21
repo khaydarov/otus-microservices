@@ -3,6 +3,7 @@ package main
 import (
 	"adverts/api"
 	"adverts/internal/db"
+	"adverts/internal/middleware"
 	"adverts/pkg/advert"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -30,11 +31,16 @@ func main() {
 
 	psql := db.Connect(os.Getenv("DATABASE_URI"))
 	advertRepo := advert.NewRepository(psql)
+	advertSelector := advert.NewAdvertSelector(psql)
 
 	server := gin.New()
 	server.GET("/", api.RootHandler())
-	server.POST("/adverts", api.PostAdvertHandler(advertRepo))
-	server.GET("/adverts/relevant", api.GetRelevantAdvertHandler())
+	server.GET("/adverts/relevant", api.GetRelevantAdvertHandler(advertRepo, advertSelector))
+
+	publicApi := server.Group("/").Use(middleware.Auth())
+	{
+		publicApi.POST("/adverts", api.PostAdvertHandler(advertRepo))
+	}
 
 	err := server.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 	if err != nil {

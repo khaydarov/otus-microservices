@@ -15,6 +15,8 @@ func PostAdvertHandler(advertRepo advert.Repository) func(c *gin.Context) {
 		Image       string `json:"image"`
 		Dates       string `json:"dates"`
 		Devices     string `json:"devices"`
+		Hits        int    `json:"hits"`
+		Cost        int    `json:"cost"`
 	}
 
 	return func(c *gin.Context) {
@@ -39,6 +41,8 @@ func PostAdvertHandler(advertRepo advert.Repository) func(c *gin.Context) {
 			body.Image,
 			devices,
 			dates,
+			body.Hits,
+			body.Cost,
 		)
 
 		err := advertRepo.Store(newAdvert)
