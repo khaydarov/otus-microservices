@@ -1,0 +1,19 @@
+image:
+  repository: khaydarov95/otus-project-adverts
+  pullPolicy: Never
+  tag: v1
+deployment:
+  replicaCount: 1
+  pod:
+    port: 80
+service:
+  type: LoadBalancer
+  port: 8083
+postgresql:
+  host: db-postgresql.default.svc.cluster.local
+  username: postgres
+  password: postgres
+  database: project
+  port: "5432"
+jaeger:
+  dns: http://simplest-collector-headless.observability.svc.cluster.local:14268/api/traces

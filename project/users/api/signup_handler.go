@@ -65,7 +65,7 @@ func SignUpHandler(userRepo user.Repository) func(c *gin.Context) {
 }
 
 func createAccount(userID user.ID) error {
-	endpoint := fmt.Sprintf("%s/internal/createAccount", os.Getenv("BILLING_HOST"))
+	endpoint := fmt.Sprintf("%s/internal/billing/createAccount", os.Getenv("BILLING_HOST"))
 	data := map[string]interface{}{
 		"user_id": userID.GetValue(),
 	}

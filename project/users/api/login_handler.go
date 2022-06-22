@@ -26,7 +26,6 @@ func LoginHandler(userRepo user.Repository, sessionRepo session.Repository) func
 		}
 
 		u, err := userRepo.FindByEmailAndPassword(user.NewEmail(body.Email), body.Password)
-		log.Println(u)
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{
 				"success": false,
