@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS t_adverts
 (
    id           uuid PRIMARY KEY,
+   user_id      uuid NOT NULL,
    title        text NOT NULL,
    description  text NOT NULL,
    link         text NOT NULL,

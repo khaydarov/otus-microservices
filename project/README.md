@@ -51,3 +51,16 @@ helm install prom prometheus-community/kube-prometheus-stack -f monitoring/prome
 kubectl port-forward service/prom-grafana -n monitoring 9000:80 # expose grafana (pass: prom-operator)
 kubectl port-forward service/prom-kube-prometheus-stack-prometheus -n monitoring 9090:9090 # expose prometheus
 ```
+
+Install Istio addons
+```shell
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/master/samples/addons/jaeger.yaml -n istio-system
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/master/samples/addons/kiali.yaml -n istio-system
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/master/samples/addons/prometheus.yaml -n istio-system
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/master/samples/addons/grafana.yaml -n istio-system
+```
+
+PostgresSQL installation
+```shell
+helm install db bitnami/postgresql -f persistence/postgres/config.yaml
+```

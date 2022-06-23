@@ -21,4 +21,4 @@ postgresql:
 jaeger:
   dns: http://simplest-collector-headless.observability.svc.cluster.local:14268/api/traces
 billing:
-  host: http://billing-billing-service.default.svc.cluster.local:8083
+  host: http://billing-service.default.svc.cluster.local:8083
