@@ -4,6 +4,9 @@ metadata:
   name: {{ include ".helm.fullname" . }}
   labels:
     {{- include ".helm.labels" . | nindent 4 }}
+{{- if .Values.metrics.serviceMonitor.enabled }}
+    servicemonitor: enabled
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:

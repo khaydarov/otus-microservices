@@ -41,3 +41,13 @@
 ### Публичные методы API системы
 
 - Написать спецификацию OpenAPI
+
+## Установка
+
+Install Prometheus Stack
+
+```shell
+helm install prom prometheus-community/kube-prometheus-stack -f monitoring/prometheus.yaml -n monitoring
+kubectl port-forward service/prom-grafana -n monitoring 9000:80 # expose grafana (pass: prom-operator)
+kubectl port-forward service/prom-kube-prometheus-stack-prometheus -n monitoring 9090:9090 # expose prometheus
+```

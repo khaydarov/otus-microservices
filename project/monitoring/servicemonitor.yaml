@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: services-monitoring
+  labels:
+    apps: otus-project
+spec:
+  jobLabel: prom-monitoring
+  namespaceSelector:
+    any: true
+  selector:
+    matchLabels:
+      servicemonitor: enabled
+  endpoints:
+    - interval: 10s
+      port: http
+      path: /metrics

@@ -8,7 +8,10 @@ deployment:
     port: 80
 service:
   type: LoadBalancer
-  port: 8083
+  port: 8081
+metrics:
+  serviceMonitor:
+    enabled: true
 postgresql:
   host: db-postgresql.default.svc.cluster.local
   username: postgres

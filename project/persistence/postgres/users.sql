@@ -14,5 +14,5 @@ CREATE TABLE IF NOT EXISTS t_sessions
     user_agent  text,
     ip_address  text,
     expires     timestamp,
-    created_at  timestamp now()
-)
+    created_at  timestamp DEFAULT now()
+);
