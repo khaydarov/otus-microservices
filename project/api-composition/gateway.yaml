@@ -1,0 +1,79 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: project-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "arch.homework"
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: project-destination-rule
+spec:
+  host: users-service
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+    - name: v2
+      labels:
+        version: v2
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: frontend-ingress
+spec:
+  hosts:
+    - "arch.homework"
+  gateways:
+    - project-gateway
+  http:
+  - match:
+      - uri:
+          regex: /(login|signup)
+    route:
+      - destination:
+          host: users-service
+          subset: v1
+          port:
+            number: 8080
+        weight: 50
+      - destination:
+          host: users-service
+          subset: v2
+          port:
+            number: 8080
+        weight: 50
+  - match:
+      - uri:
+          prefix: /billing
+    route:
+      - destination:
+          host: billing-service.default.svc.cluster.local
+          port:
+            number: 8083
+  - match:
+      - uri:
+          prefix: /adverts
+    route:
+      - destination:
+          host: adverts-service.default.svc.cluster.local
+          port:
+            number: 8081
+  - match:
+      - uri:
+          prefix: /sites
+    route:
+      - destination:
+          host: sites-service.default.svc.cluster.local
+          port:
+            number: 8082

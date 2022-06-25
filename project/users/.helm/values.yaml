@@ -1,13 +1,12 @@
 image:
   repository: khaydarov95/otus-project-users
   pullPolicy: Never
-  tag: v1
 deployment:
   replicaCount: 1
   pod:
     port: 80
 service:
-  type: LoadBalancer
+  type: NodePort
   port: 8080
 metrics:
   serviceMonitor:

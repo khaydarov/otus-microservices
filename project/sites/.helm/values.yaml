@@ -7,7 +7,7 @@ deployment:
   pod:
     port: 80
 service:
-  type: LoadBalancer
+  type: NodePort
   port: 8082
 metrics:
   serviceMonitor:
