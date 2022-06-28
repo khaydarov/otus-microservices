@@ -46,7 +46,9 @@ func LoginHandler(userRepo user.Repository, sessionRepo session.Repository) func
 		if err != nil {
 			log.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Couldn't create session",
+				"success": false,
+				"message": "Couldn't create session",
+				"data":    gin.H{},
 			})
 
 			return
@@ -55,7 +57,9 @@ func LoginHandler(userRepo user.Repository, sessionRepo session.Repository) func
 		token, err := session.CreateAccessToken(u)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Couldn't create access token",
+				"success": false,
+				"message": "Couldn't create access token",
+				"data":    gin.H{},
 			})
 
 			return

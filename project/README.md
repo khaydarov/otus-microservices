@@ -40,7 +40,7 @@
 
 ### Публичные методы API системы
 
-- Написать спецификацию OpenAPI
+- [Спецификацию OpenAPI](api-composition/api.spec.yaml)
 
 ## Установка
 

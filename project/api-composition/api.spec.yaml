@@ -8,7 +8,7 @@ servers:
   - url: http://arch.homework
     description: Локальный сервер
 security:
-  - bearerAuth: []
+  - BearerAuth: []
 tags:
   - name: users
     description: Пользователи
@@ -26,22 +26,23 @@ paths:
       summary: Регистрация пользователя
       description: Создает пользователя и аккаунт в сервисе биллинга
       requestBody:
-        $ref: '#/components/requestBodies/User'
+        $ref: '#/components/requestBodies/SignUp'
       responses:
-        201:
+        200:
           description: Регистрация прошла успешно
           content:
             application/json:
               schema:
                 type: object
                 properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
                   data:
                     type: object
                     properties:
                       id:
-                        type: string
-                        format: uuid
-                      password:
                         type: string
                         format: uuid
         400:
@@ -51,12 +52,18 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
+                  success:
+                    type: boolean
+                  message:
                     type: string
+                  data:
+                    type: object
               example:
-                error: 'user with login exists'
+                success: false
+                message: 'user with email already exist'
+                data: {}
 
-  /sign-up:
+  /signup:
     post:
       tags:
         - users
@@ -72,6 +79,10 @@ paths:
               schema:
                 type: object
                 properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
                   data:
                     type: object
                     properties:
@@ -90,19 +101,23 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
+                  success:
+                    type: boolean
+                  message:
                     type: string
+                  data:
+                    type: object
               example:
-                error: 'invalid login/password or user does not exist'
-        404:
-          description: Такого пользователя нет
+                message: 'invalid login/password or user does not exist'
 
-  /users/me:
+  /billing/deposit:
     post:
       tags:
         - billing
       summary: 'Пополнение баланса'
       description: 'Пополняет баланс аккаунта в биллинге'
+      security:
+        - BearerAuth: []
       requestBody:
         $ref: '#/components/requestBodies/Deposit'
       responses:
@@ -113,14 +128,153 @@ paths:
               schema:
                 type: object
                 properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      transactionID:
+                        type: string
+              example:
+                transactionID: 'f2aabdea-3f1b-4cea-baac-62673065d05c'
+        400:
+          description: 'Ошибка при пополнении баланса'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+              example:
+                message: 'Ошибка карты'
+
+  /billing/withdraw:
+    post:
+      tags:
+        - billing
+      summary: 'Вывод денег на карту'
+      description: 'Выводит деньги на карту'
+      security:
+        - BearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/Withdraw'
+      responses:
+        200:
+          description: 'Деньги выведены на карту'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      transactionID:
+                        type: string
+              example:
+                transactionID: 'f2aabdea-3f1b-4cea-baac-62673065d05c'
+        400:
+          description: 'Ошибка при выводе денег'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+              example:
+                message: 'Ошибка карты'
+
+  /billing/balance:
+    get:
+      tags:
+        - billing
+      summary: 'Получение баланса'
+      description: 'Получение баланса'
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: 'Баланс выведен'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
                   data:
                     type: object
                     properties:
                       balance:
                         type: integer
+        401:
+          description: 'Пользователь не авторизован'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  /adverts:
+    post:
+      tags:
+        - adverts
+      summary: 'Создание объявления'
+      description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/Advert'
+      responses:
+        200:
+          description: 'Получено объявление'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
                       id:
                         type: string
                         format: uuid
+                      title:
+                        type: string
+                      description:
+                        type: string
+                      link:
+                        type: string
+                      image:
+                        type: string
+                      devices:
+                        type: string
+                      dates:
+                        type: string
+                      hits:
+                        type: integer
+                      cost:
+                        type: integer
         400:
           description: 'Ошибка запроса'
           content:
@@ -128,20 +282,62 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
+                  success:
+                    type: boolean
+                  message:
                     type: string
+                  data:
+                    type: object
               example:
-                error: 'Не корректные данные'
-
-  /billing/myAccount:
+                error: 'Некорректные данные'
     get:
       tags:
-        - billing
-      summary: 'Просмотр состояния счета'
-      description: 'Показывает баланс и идентификатор счета'
+        - adverts
+      summary: 'Получение списка объявлений'
+      description: ''
+      security:
+        - BearerAuth: []
       responses:
         200:
-          description: 'Счет найден'
+          description: 'Список получен'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          title:
+                            type: string
+                          description:
+                            type: string
+                          link:
+                            type: string
+                          image:
+                            type: string
+                          devices:
+                            type: string
+                          dates:
+                            type: string
+                          hits:
+                            type: integer
+                          cost:
+                            type: integer
+
+  /adverts/relevant:
+    get:
+      tags:
+        - adverts
+      summary: 'Получение объявления для открутки'
+      responses:
+        200:
+          description: 'Объявление получено'
           content:
             application/json:
               schema:
@@ -150,112 +346,94 @@ paths:
                   id:
                     type: string
                     format: uuid
-                  balance:
-                    type: integer
-
-        401:
-          description: 'Пользователь не авторизован'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
+                  title:
                     type: string
-              example:
-                error: 'Не авторизован'
+                  description:
+                    type: string
+                  link:
+                    type: string
+                  image:
+                    type: string
 
-  /orders:
-    put:
+  /sites:
+    post:
       tags:
-        - orders
-      summary: 'Создание заказа'
-      description: 'Создает заказ и списывает деньги'
+        - sites
+      summary: 'Создание сайта'
       requestBody:
-        $ref: '#/components/schemas/Order'
+        $ref: '#/components/requestBodies/Site'
       responses:
-        200:
-          description: 'Возвращается идентификатор заказа'
+        201:
+          description: 'Сайт создан успешно'
           content:
             application/json:
               schema:
                 type: object
                 properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
                   data:
                     type: object
                     properties:
                       id:
                         type: string
                         format: uuid
+                      title:
+                        type: string
+                      domains:
+                        type: string
+
         400:
-          description: 'Ошибка запроса'
+          description: 'Ошибка данных'
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  error:
+                  success:
+                    type: boolean
+                  message:
                     type: string
-              example:
-                error: 'Недостаточно денег'
 
-  /notifications:
     get:
       tags:
-        - notifications
-      summary: 'Список уведомлений'
-      description: 'Возвращает список уведомлений'
+        - sites
+      summary: 'Получение списка созданных сайтов'
       responses:
         200:
-          description: 'Cписок уведомлений'
+          description: 'Список получен'
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Notification'
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      - type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          title:
+                            type: string
+                          domains:
+                            type: string
+
 components:
   securitySchemes:
-    bearerAuth:
+    BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-  schemas:
-    User:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        login:
-          type: string
-        password:
-          type: string
-          format: uuid
-        firstName:
-          type: string
-        lastName:
-          type: string
-    Order:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        title:
-          type: string
-        amount:
-          type: integer
-    Notification:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        text:
-          type: string
   requestBodies:
-    User:
+    SignUp:
       content:
         application/json:
           schema:
@@ -264,9 +442,8 @@ components:
             sample-user:
               summary: Обычный пользователь
               value:
-                login: johndoe589
-                firstName: John
-                lastName: Doe
+                email: johndoe589@mail.com
+                password: JohnsPassword
       description: User object that needs to be created
       required: true
     Login:
@@ -275,14 +452,14 @@ components:
           schema:
             type: object
             properties:
-              login:
+              email:
                 type: string
+                format: email
               password:
                 type: string
-                format: uuid
           example:
-            login: 'conor'
-            password: 'your-uuid-password'
+            login: 'conor@mail.com'
+            password: 'your-password'
     Deposit:
       content:
         application/json:
@@ -293,8 +470,50 @@ components:
                 type: integer
           example:
             amount: 1000
-    Order:
+    Withdraw:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Order'
+            type: object
+            properties:
+              amount:
+                type: integer
+          example:
+            amount: 1000
+    Advert:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+              description:
+                type: string
+              link:
+                type: string
+              image:
+                type: string
+              devices:
+                type: string
+              dates:
+                type: string
+              hits:
+                type: integer
+              cost:
+                type: integer
+          example:
+            dates: '21-06-2022,23-06-2022'
+            devices: 'ios,android'
+    Site:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+              domains:
+                type: string
+          example:
+            domains: 'localhost,otus.com'

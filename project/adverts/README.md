@@ -23,8 +23,6 @@
 
 - None
 
-## TODO
+**Доступность**
 
-- helm
-- persistence
-- metrics
+- SLA: 95%

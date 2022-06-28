@@ -22,9 +22,6 @@
 
 - None
 
-## TODO
+**Доступность**
 
-- implement methods
-- persistence
-- helm
-- metrics
+- SLA: 95%
